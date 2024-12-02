@@ -1,0 +1,82 @@
+<div class="gl-wrapper">
+
+    <div class="gl-header gl-box"></div>
+    <div class="gl-sidebar">
+        <div class="gl-sidebar-list">
+            @for (wi of widgets; track wi.id; let wIdx = $index) {
+                <div
+                    class="gl-sidebar-list-item gl-box"
+                    [id]="'wi-opt-' + wIdx"
+                    draggable="true"
+                    (dragstart)="onDragStart($event, wi)"
+                >
+                    {{ wi.type }}
+                </div>
+            }
+            
+            @empty {
+                <div class="gl-sidebar-list-item gl-box">
+                    There are no widgets.
+                </div>
+            }
+        </div>
+        <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover">
+            <mat-icon fontIcon="add"></mat-icon> Create Widget
+        </div>
+        <div class="gl-sidebar-section-list">
+            <div class="gl-sidebar-section-list-item gl-flex-center gl-box gl-box-hover">
+                <mat-icon fontIcon="home"></mat-icon>
+                <span>home</span>
+            </div>
+            <div class="gl-sidebar-section-list-item gl-flex-center gl-box gl-box-hover">
+                <mat-icon fontIcon="widgets"></mat-icon>
+                <span>Widgs</span>
+            </div>
+            <div class="gl-sidebar-section-list-item gl-flex-center gl-box gl-box-hover">
+                <mat-icon fontIcon="grid_4x4"></mat-icon>
+                <span>grids</span>
+            </div>
+            <div class="gl-sidebar-section-list-item gl-flex-center gl-box gl-box-hover">
+                <mat-icon fontIcon="my_library_books"></mat-icon>
+                <span>TEMPLS</span>
+            </div>
+        </div>
+    </div>
+    <div class="gl-content gl-box">
+        <div class="gl-grid-wrapper">
+            @for (cell of cells; track cell.id; let cIdx = $index) {
+                <div
+                    [ngClass]="{
+                        'gl-cell': true,
+                        'gl-flex-center': true,
+                        'gl-box': true
+                    }"
+                    [ngStyle]="{
+                        'grid-area': cell.area
+                    }"
+                    (dragenter)="onDragEnter($event)"
+                    (dragleave)="onDragLeave($event)"
+                    (dragover)="onDragOver($event)"
+                    (drop)="onDrop($event, cIdx)"
+                >
+                    @if (cell.widget != null) {
+                        <div
+                            class="gl-widget"
+                            (click)="removeWidget(cIdx)"
+                        >
+                            <div class="gl-widget-header">
+                                <h1>{{ cell?.widget?.type }}</h1>
+                            </div>
+                            <div class="gl-widget-content">
+                                <span>
+                                    {{ cell?.widget?.description }}
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>        
+    </div>
+
+</div>
