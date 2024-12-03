@@ -1,38 +1,32 @@
 <div class="gl-wrapper">
 
     <div class="gl-header gl-box gl-flex-center">
-        <h1>Editor</h1>
+        <h1>Grids</h1>
     </div>
     <div class="gl-sidebar">
 
-            <div class="gl-sidebar-list">
-                @for (wi of widgets; track wi['id']; let wIdx = $index) {
-                    <div
-                        class="gl-sidebar-list-item gl-box"
-                        [id]="'wi-opt-' + wIdx"
-                        [draggable]="true"
-                        (dragstart)="onDragStart($event, wi)"
-                    >
-                        {{ wi['type'] }}
-                    </div>
-                }
-
-                @empty {
-                    <div class="gl-sidebar-list-item gl-box">
-                        No Widgets
-                    </div>
-                }
-            </div>
+        <div class="gl-sidebar-list">
+            @for (wi of widgets; track wi.id; let wIdx = $index) {
+                <div
+                    class="gl-sidebar-list-item gl-box"
+                    [id]="'wi-opt-' + wIdx"
+                    [draggable]="wi.id != 0"
+                    (dragstart)="onDragStart($event, wi)"
+                >
+                    {{ wi.type }}
+                </div>
+            }
+        </div>
 
         <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover">
-            <mat-icon fontIcon="add"></mat-icon> Create New Widget
+            <mat-icon fontIcon="add"></mat-icon> Create New Grid
         </div>
 
 
         <div class="gl-sidebar-section-list">
             <div
                 class="gl-sidebar-section-list-item gl-flex-center gl-box gl-box-hover"
-                [routerLink]="['/editor']" [routerLinkActive]="'gl-box-active'"
+                [routerLink]="['editor']" [routerLinkActive]="'gl-box-active'"
             >
                 <mat-icon fontIcon="view_quilt"></mat-icon>
             </div>

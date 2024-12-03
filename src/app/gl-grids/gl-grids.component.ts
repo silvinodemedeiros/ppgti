@@ -1,25 +1,27 @@
-import { Component } from '@angular/core';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {MatIconModule} from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-gl',
+  selector: 'app-gl-grids',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
-    DragDropModule,
+    CommonModule,
     MatIconModule
   ],
-  exportAs: 'GlComponent',
-  templateUrl: './gl.component.html',
-  styleUrl: './gl.component.less'
+  templateUrl: './gl-grids.component.html',
+  styleUrl: './gl-grids.component.less'
 })
-export class GlComponent {
+export class GlGridsComponent {
 
-  widgets = [];
+  widgets = [
+    {
+      id: 0,
+      type: 'No Grids'
+    }
+  ];
 
   cells: any[] = [
     {
