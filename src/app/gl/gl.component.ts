@@ -3,11 +3,13 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatIconModule} from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { GlMenuComponent } from '../gl-menu/gl-menu.component';
 
 @Component({
   selector: 'app-gl',
   standalone: true,
   imports: [
+    GlMenuComponent,
     CommonModule,
     RouterModule,
     DragDropModule,

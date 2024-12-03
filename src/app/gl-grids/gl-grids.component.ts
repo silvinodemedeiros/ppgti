@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { GlMenuComponent } from '../gl-menu/gl-menu.component';
 
 @Component({
   selector: 'app-gl-grids',
   standalone: true,
   imports: [
+    GlMenuComponent,
     RouterModule,
     CommonModule,
     MatIconModule
