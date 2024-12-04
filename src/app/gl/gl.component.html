@@ -13,7 +13,7 @@
                     [draggable]="true"
                     (dragstart)="onDragStart($event, wi)"
                 >
-                    {{ wi['type'] }}
+                    {{ wi['value'] }}
                 </div>
             }
 
@@ -53,11 +53,11 @@
                             (click)="removeWidget(cIdx)"
                         >
                             <div class="gl-widget-header">
-                                <h2>{{ cell?.widget?.type }}</h2>
+                                <h2>{{ cell?.widget?.value }}</h2>
                             </div>
                             <div class="gl-widget-content">
                                 <span>
-                                    {{ cell?.widget?.value }}
+                                    {{ currentWeather[cell?.widget?.type]?.value }}
                                 </span>
                             </div>
                         </div>

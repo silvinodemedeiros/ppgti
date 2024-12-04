@@ -3,6 +3,11 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { Subscription } from 'rxjs';
+import { GridService } from '../services/grid/grid.service';
 
 @Component({
   selector: 'app-gl-grids',
@@ -11,20 +16,21 @@ import { GlMenuComponent } from '../gl-menu/gl-menu.component';
     GlMenuComponent,
     RouterModule,
     CommonModule,
-    MatIconModule
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
   ],
   templateUrl: './gl-grids.component.html',
   styleUrl: './gl-grids.component.less'
 })
 export class GlGridsComponent {
 
-  widgets = [
-    {
-      id: 0,
-      type: 'No Grids'
-    }
-  ];
-
+  widgets: any = [];
+  sub = new Subscription();
+  isGridListLoading = false;
+  currentGrid: any = null;
   cells: any[] = [
     {
       id: 1,
@@ -43,58 +49,73 @@ export class GlGridsComponent {
     }
   ];
 
+  form: FormGroup;
+
   constructor(
-    
-  ) {}
+    private gridService: GridService,
+    private fb: FormBuilder
+  ) {
 
-  removeWidget(cellIndex: any): void {
-    this.cells = this.cells.map((cell, index) => {
-      if (index === cellIndex) {
-        return {
-          ...cell,
-          widget: null
-        };
-      }
-
-      return cell;
+    this.form = this.fb.group({
+      rowStart: [null],
+      columnStart: [null],
+      rowEnd: [null],
+      columnEnd: [null]
     });
   }
 
-  onDragStart(ev: any, widget: any) {
-    const widgetJson = JSON.stringify(widget);
-    ev.dataTransfer.setData('text/plain', widgetJson);
+  ngOnInit(): void {
+    this.getGrids();
   }
 
-  onDragOver(ev: any) {
-    ev.preventDefault();
-    ev.stopPropagation();
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
-  onDragEnter(ev: any) {
-    ev.target.classList.add('gl-cell-hover');
+  getGrids() {
+    this.isGridListLoading = true;
+    const getSub = this.gridService.getGrids().subscribe(({data}) => {
+      this.widgets = data;
+      this.isGridListLoading = false;
+    });
+
+    this.sub.add(getSub);
   }
 
-  onDragLeave(ev: any) {
-    ev.target.classList.remove('gl-cell-hover');
-  }
+  setCurrentGrid(widget: any) {
+    if (!widget) {
+      this.currentGrid = null;
+      this.form.get('type')?.setValue(null);
+      this.form.get('value')?.setValue(null);
 
-  onDrop(ev: any, cellIndex: any) {
-    ev.stopPropagation();
-    const widgetData = JSON.parse(ev.dataTransfer.getData('text/plain'));
-
-    if (ev.target.classList.contains('gl-cell-hover')) {
-      ev.target.classList.remove('gl-cell-hover');
+      return;
     }
 
-    this.cells = this.cells.map((cell, index) => {
-      if (index === cellIndex) {
-        return {
-          ...cell,
-          widget: widgetData
-        }
-      }
+    this.currentGrid = widget;
+    this.form.get('type')?.setValue(this.currentGrid.type);
+    this.form.get('value')?.setValue(this.currentGrid.value);
+  }
 
-      return cell;
+  createGrid() {
+    const type = this.form.get('type')?.value;
+    const value = this.form.get('value')?.value;
+
+    const createSub = this.gridService.createGrid({
+      data: {
+        type: type,
+        value: value
+      }
+    }).subscribe(({data}: any) => {
+      this.widgets = [...this.widgets, data];
     });
+    this.sub.add(createSub);
+  }
+
+  deleteGrid() {
+    const createSub = this.gridService.deleteGrid(this.currentGrid.id).subscribe((data) => {
+      this.setCurrentGrid(null);
+      this.getGrids();
+    });
+    this.sub.add(createSub);
   }
 }

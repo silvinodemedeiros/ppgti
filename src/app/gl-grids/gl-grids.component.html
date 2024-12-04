@@ -1,6 +1,6 @@
 <div class="gl-wrapper">
 
-    <div class="gl-header gl-box gl-flex-center">
+    <div class="gl-header gl-flex-center gl-box">
         <h1>Grids</h1>
     </div>
     <div class="gl-sidebar">
@@ -8,63 +8,64 @@
         <div class="gl-sidebar-list">
             @for (wi of widgets; track wi['id']; let wIdx = $index) {
                 <div
-                    class="gl-sidebar-list-item gl-box"
+                    class="gl-sidebar-list-item gl-box gl-box-hover"
                     [id]="'wi-opt-' + wIdx"
-                    [draggable]="true"
-                    (dragstart)="onDragStart($event, wi)"
+                    (click)="setCurrentGrid(wi)"
                 >
-                    {{ wi['type'] }}
+                    {{ wi['value'] }}
                 </div>
             }
 
             @empty {
                 <div class="gl-sidebar-list-item gl-box">
-                    No Widgets
+                    {{
+                        isGridListLoading
+                        ? 'Loading...'
+                        : 'No Grids'
+                    }}
                 </div>
             }
         </div>
 
-        <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover">
-            <mat-icon fontIcon="add"></mat-icon> Create New Grid
+        <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover"
+            (click)="createGrid()"
+        >
+            <mat-icon fontIcon="add"></mat-icon> Create New Widget
         </div>
 
         <app-gl-menu></app-gl-menu>
     </div>
-    <div class="gl-content gl-box">
-        <div class="gl-grid-wrapper">
-            @for (cell of cells; track cell.id; let cIdx = $index) {
-                <div
-                    [ngClass]="{
-                        'gl-cell': true,
-                        'gl-flex-center': true,
-                        'gl-box': true
-                    }"
-                    [ngStyle]="{
-                        'grid-area': cell.area
-                    }"
-                    (dragenter)="onDragEnter($event)"
-                    (dragleave)="onDragLeave($event)"
-                    (dragover)="onDragOver($event)"
-                    (drop)="onDrop($event, cIdx)"
-                >
-                    @if (cell.widget != null) {
-                        <div
-                            class="gl-widget"
-                            (click)="removeWidget(cIdx)"
-                        >
-                            <div class="gl-widget-header">
-                                <h2>{{ cell?.widget?.type }}</h2>
-                            </div>
-                            <div class="gl-widget-content">
-                                <span>
-                                    {{ cell?.widget?.description }}
-                                </span>
-                            </div>
-                        </div>
-                    }
+    <div class="gl-content gl-flex-center">
+        <div class="gl-grid-wrapper gl-box">
+            <h2>{{currentGrid ? 'Edit' : 'Create'}} Grid</h2>
+            <form class="example-form" [formGroup]="form">
+                <div class="gl-box">
+                    <div class="gl-flex-center">
+                        <mat-form-field>
+                            <mat-label>Row Start</mat-label>
+                            <input formControlName="rowStart" matInput>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Column Start</mat-label>
+                            <input formControlName="columnStart" matInput>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Row End</mat-label>
+                            <input formControlName="rowEnd" matInput>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Column End</mat-label>
+                            <input formControlName="columnEnd" matInput>
+                        </mat-form-field>
+                    </div>
                 </div>
+            </form>
+
+            <button class="save-button" mat-raised-button (click)="createGrid()">Save Grid</button>
+            @if (currentGrid != null) {
+                <button mat-raised-button (click)="deleteGrid()" color="warn">Delete Grid</button>
             }
-        </div>        
+        </div>
     </div>
 
 </div>

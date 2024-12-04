@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
 import { WidgetService } from '../services/widget/widget.service';
 import { Subscription } from 'rxjs';
+import { WeatherService } from '../services/weather/weather.service';
 
 @Component({
   selector: 'app-gl',
@@ -26,6 +27,8 @@ export class GlComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   
   widgets = [];
+  currentWeather: any;
+
   isWidgetListLoading = false;
 
   cells: any[] = [
@@ -47,7 +50,8 @@ export class GlComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    private weatherService: WeatherService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +61,13 @@ export class GlComponent implements OnInit, OnDestroy {
       this.isWidgetListLoading = false;
     });
 
+    const sub = this.weatherService.getWeather().subscribe(
+      ({data}) => {
+        this.currentWeather = data;
+      }
+    );
+
+    this.subscription.add(sub);
     this.subscription.add(s);
   }
 
