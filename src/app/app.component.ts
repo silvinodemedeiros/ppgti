@@ -3,6 +3,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { WeatherService } from './services/weather/weather.service';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +16,15 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'source';
-  weatherUrl = 'http://localhost:3000/api/v1/climate/weather';
   subscription = new Subscription();
 
   constructor(
-    private httpClient: HttpClient
+    private weatherService: WeatherService
   ) {}
 
   ngOnInit(): void {
 
-    const sub = this.httpClient.get<any>(this.weatherUrl).subscribe(
+    const sub = this.weatherService.getWeather().subscribe(
       ({data}) => console.log(data)
     );
 

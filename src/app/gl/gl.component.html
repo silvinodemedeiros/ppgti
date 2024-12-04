@@ -5,29 +5,28 @@
     </div>
     <div class="gl-sidebar">
 
-            <div class="gl-sidebar-list">
-                @for (wi of widgets; track wi['id']; let wIdx = $index) {
-                    <div
-                        class="gl-sidebar-list-item gl-box"
-                        [id]="'wi-opt-' + wIdx"
-                        [draggable]="true"
-                        (dragstart)="onDragStart($event, wi)"
-                    >
-                        {{ wi['type'] }}
-                    </div>
-                }
+        <div class="gl-sidebar-list">
+            @for (wi of widgets; track wi['id']; let wIdx = $index) {
+                <div
+                    class="gl-sidebar-list-item gl-box"
+                    [id]="'wi-opt-' + wIdx"
+                    [draggable]="true"
+                    (dragstart)="onDragStart($event, wi)"
+                >
+                    {{ wi['type'] }}
+                </div>
+            }
 
-                @empty {
-                    <div class="gl-sidebar-list-item gl-box">
-                        No Widgets
-                    </div>
-                }
-            </div>
-
-        <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover">
-            <mat-icon fontIcon="add"></mat-icon> Create New Widget
+            @empty {
+                <div class="gl-sidebar-list-item gl-box">
+                    {{
+                        isWidgetListLoading
+                        ? 'Loading...'
+                        : 'No Widgets'
+                    }}
+                </div>
+            }
         </div>
-
 
         <app-gl-menu></app-gl-menu>
     </div>
@@ -58,7 +57,7 @@
                             </div>
                             <div class="gl-widget-content">
                                 <span>
-                                    {{ cell?.widget?.description }}
+                                    {{ cell?.widget?.value }}
                                 </span>
                             </div>
                         </div>

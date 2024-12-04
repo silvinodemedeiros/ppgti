@@ -1,1 +1,63 @@
-<p>gl-widgets works!</p>
+<div class="gl-wrapper">
+
+    <div class="gl-header gl-box gl-flex-center">
+        <h1>Widgets</h1>
+    </div>
+    <div class="gl-sidebar">
+
+        <div class="gl-sidebar-list">
+            @for (wi of widgets; track wi['id']; let wIdx = $index) {
+                <div
+                    class="gl-sidebar-list-item gl-box gl-box-hover"
+                    [id]="'wi-opt-' + wIdx"
+                    (click)="setCurrentWidget(wi)"
+                >
+                    {{ wi['type'] }}
+                </div>
+            }
+
+            @empty {
+                <div class="gl-sidebar-list-item gl-box">
+                    {{
+                        isWidgetListLoading
+                        ? 'Loading...'
+                        : 'No Widgets'
+                    }}
+                </div>
+            }
+        </div>
+
+        <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover"
+            (click)="createWidget()"
+        >
+            <mat-icon fontIcon="add"></mat-icon> Create New Widget
+        </div>
+
+        <app-gl-menu></app-gl-menu>
+    </div>
+    <div class="gl-content gl-flex-center">
+        <div class="gl-grid-wrapper gl-box">
+            <h2>{{currentWidget ? 'Edit' : 'Create'}} Widget</h2>
+            <form class="example-form" [formGroup]="form">
+                <div class="gl-box">
+                    <h3>Type</h3>
+                    <mat-form-field>
+                        <input formControlName="type" matInput placeholder="Choose type for widget" value="Sushi">
+                    </mat-form-field>
+                </div>
+                <div class="gl-box">
+                    <h3>Description</h3>
+                    <mat-form-field>
+                        <input formControlName="value" matInput placeholder="Write a value for the widget" value="Sushi">
+                    </mat-form-field>
+                </div>
+            </form>
+
+            <button class="save-button" mat-raised-button (click)="createWidget()">Save Widget</button>
+            @if (currentWidget != null) {
+                <button mat-raised-button (click)="deleteWidget()" color="warn">Delete Widget</button>
+            }
+        </div>
+    </div>
+
+</div>

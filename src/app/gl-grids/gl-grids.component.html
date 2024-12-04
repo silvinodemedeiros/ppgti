@@ -6,14 +6,20 @@
     <div class="gl-sidebar">
 
         <div class="gl-sidebar-list">
-            @for (wi of widgets; track wi.id; let wIdx = $index) {
+            @for (wi of widgets; track wi['id']; let wIdx = $index) {
                 <div
                     class="gl-sidebar-list-item gl-box"
                     [id]="'wi-opt-' + wIdx"
-                    [draggable]="wi.id != 0"
+                    [draggable]="true"
                     (dragstart)="onDragStart($event, wi)"
                 >
-                    {{ wi.type }}
+                    {{ wi['type'] }}
+                </div>
+            }
+
+            @empty {
+                <div class="gl-sidebar-list-item gl-box">
+                    No Widgets
                 </div>
             }
         </div>
@@ -21,7 +27,6 @@
         <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover">
             <mat-icon fontIcon="add"></mat-icon> Create New Grid
         </div>
-
 
         <app-gl-menu></app-gl-menu>
     </div>

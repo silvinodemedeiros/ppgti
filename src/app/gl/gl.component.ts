@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatIconModule} from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
+import { WidgetService } from '../services/widget/widget.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-gl',
@@ -19,9 +21,12 @@ import { GlMenuComponent } from '../gl-menu/gl-menu.component';
   templateUrl: './gl.component.html',
   styleUrl: './gl.component.less'
 })
-export class GlComponent {
+export class GlComponent implements OnInit, OnDestroy {
 
+  subscription = new Subscription();
+  
   widgets = [];
+  isWidgetListLoading = false;
 
   cells: any[] = [
     {
@@ -42,8 +47,22 @@ export class GlComponent {
   ];
 
   constructor(
-    
+    private widgetService: WidgetService
   ) {}
+
+  ngOnInit(): void {
+    this.isWidgetListLoading = true;
+    const s = this.widgetService.getWidgets().subscribe(({data}) => {
+      this.widgets = data;
+      this.isWidgetListLoading = false;
+    });
+
+    this.subscription.add(s);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   removeWidget(cellIndex: any): void {
     this.cells = this.cells.map((cell, index) => {
