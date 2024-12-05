@@ -2,6 +2,8 @@
 
 This project was generated with Django, Docker and Orion Context Broker.
 
+![backend](backend/imd_dev_web/static/img/backend.png)
+
 ## Check Docker and Docker-compose
 
 Check if docker and docker-compose are installed.
@@ -32,3 +34,7 @@ Build and install the containers.
 ```shell
 $ docker-compose up --build
 ```
+
+## System Structure
+
+![backend](backend/imd_dev_web/static/img/sistema.png)
