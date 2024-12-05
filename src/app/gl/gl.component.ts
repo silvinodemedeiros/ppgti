@@ -32,6 +32,10 @@ export class GlComponent implements OnInit, OnDestroy {
 
   isListLoading = false;
 
+  // TODO - create workspace component
+  // TODO - implement template UI and CRUD
+  // TODO - user CRUD
+
   cells: any[] = [
     {
       id: 1,
