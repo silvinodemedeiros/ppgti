@@ -56,7 +56,9 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
         if custom_user_serializer.is_valid():
             custom_user = custom_user_serializer.save()  # Cria o CustomUser
-            return Response({'code': custom_user.code}, status=status.HTTP_201_CREATED)  # Retorna o código UUID do usuário criado
+            response_serializer = CustomUserSerializer(custom_user)  # Serializa o objeto criado
+            #return Response({'code': custom_user.code}, status=status.HTTP_201_CREATED)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(custom_user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
         

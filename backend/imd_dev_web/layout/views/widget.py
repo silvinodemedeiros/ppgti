@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from layout.models import Widget
+from layout.utils import handle_exception
 from layout.serializers.widget import (WidgetSerializer,
                                        WidgetCreate,
                                        WidgetUpdate)
@@ -48,7 +49,6 @@ class WidgetViewSet(viewsets.ModelViewSet):
         
         curl -X POST http://127.0.0.1:8000/api/v1/layout/widget/create/ \
             -d "type=Vento" \
-            -d "value=7" \
             -u "admin@admin.com:admin"
             
         """
@@ -56,11 +56,16 @@ class WidgetViewSet(viewsets.ModelViewSet):
         # Instancia o serializer para criação de Widget com código UUID
         serializer = WidgetCreate(data=request.data)
 
-        if serializer.is_valid():
-            widget_version = serializer.save()  # Cria o Widget
-            return Response({'code': widget_version.id}, status=status.HTTP_201_CREATED)  # Retorna o código UUID do usuário criado
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
+        try:
+            if serializer.is_valid():
+                widget_version = serializer.save()  # Cria o Widget
+                response_serializer = WidgetSerializer(widget_version)  # Serializa o objeto criado
+                return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
+        except Exception as e:
+            # Usa a função utilitária para tratar a exceção
+            return handle_exception(e, message="Erro ao criar Widget")
  
     @action(detail=True, methods=['put', 'patch'], url_path='update_by_id')
     def update_by_id(self, request, pk=None):

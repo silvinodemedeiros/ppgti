@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from layout.models import Cell
+from layout.utils import handle_exception
 from layout.serializers.cell import (CellSerializer,
                                      CellCreate,
                                      CellUpdate)
@@ -29,7 +30,7 @@ class CellViewSet(viewsets.ModelViewSet):
         if self.action == 'update_by_id':
             return CellUpdate
         # Ação padrão para outros casos
-        return CellSerializer
+        return c
 
     def get_serializer_context(self):
         '''
@@ -58,11 +59,16 @@ class CellViewSet(viewsets.ModelViewSet):
         # Instancia o serializer para criação de Cell com código UUID
         serializer = CellCreate(data=request.data)
 
-        if serializer.is_valid():
-            Cell_version = serializer.save()  # Cria o Cell
-            return Response({'code': Cell_version.id}, status=status.HTTP_201_CREATED)  # Retorna o código UUID do usuário criado
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
+        try:
+            if serializer.is_valid():
+                Cell_version = serializer.save()  # Cria o Cell
+                response_serializer = CellSerializer(Cell_version)  # Serializa o objeto criado
+                return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
+        except Exception as e:
+            # Usa a função utilitária para tratar a exceção
+            return handle_exception(e, message="Erro ao criar Cell")
  
     @action(detail=True, methods=['put', 'patch'], url_path='update_by_id')
     def update_by_id(self, request, pk=None):

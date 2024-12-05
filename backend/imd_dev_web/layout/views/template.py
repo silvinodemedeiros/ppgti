@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from layout.models import Template
+from layout.utils import handle_exception
 from layout.serializers.template import (TemplateSerializer,
                                          TemplateCreate,
                                          TemplateUpdate)
@@ -55,11 +56,16 @@ class TemplateViewSet(viewsets.ModelViewSet):
         # Instancia o serializer para criação de Template com código UUID
         serializer = TemplateCreate(data=request.data)
 
-        if serializer.is_valid():
-            Template_version = serializer.save()  # Cria o Template
-            return Response({'code': Template_version.id}, status=status.HTTP_201_CREATED)  # Retorna o código UUID do usuário criado
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
+        try:
+            if serializer.is_valid():
+                Template_version = serializer.save()  # Cria o Template
+                response_serializer = TemplateSerializer(Template_version)  # Serializa o objeto criado
+                return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retorna erros se inválido
+        except Exception as e:
+            # Usa a função utilitária para tratar a exceção
+            return handle_exception(e, message="Erro ao criar Template")
  
     @action(detail=True, methods=['put', 'patch'], url_path='update_by_id')
     def update_by_id(self, request, pk=None):
