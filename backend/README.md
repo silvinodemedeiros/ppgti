@@ -2,7 +2,7 @@
 
 This project was generated with Django, Docker and Orion Context Broker.
 
-![backend](backend/imd_dev_web/static/img/backend.png)
+![backend](imd_dev_web/static/img/backend.png)
 
 ## Check Docker and Docker-compose
 
@@ -37,4 +37,4 @@ $ docker-compose up --build
 
 ## System Structure
 
-![backend](backend/imd_dev_web/static/img/sistema.png)
+![backend](imd_dev_web/static/img/sistema.png)
