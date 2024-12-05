@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class WidgetService {
 
-  private widgetApiUrl = 'http://localhost:3000/widgets';
+  private widgetApiUrl = 'http://localhost:3000/widget';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -15,10 +15,10 @@ export class WidgetService {
   }
 
   createWidget(data: any) {
-    return this.httpClient.post<any>(this.widgetApiUrl + '/create/', data);
+    return this.httpClient.post<any>(this.widgetApiUrl, data);
   }
 
   deleteWidget(id: any) {
-    return this.httpClient.delete<any>(this.widgetApiUrl + '/delete?id=' + id);
+    return this.httpClient.delete<any>(this.widgetApiUrl + '?id=' + id);
   }
 }

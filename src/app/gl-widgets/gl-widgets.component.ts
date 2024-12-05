@@ -89,6 +89,7 @@ export class GlWidgetsComponent implements OnInit, OnDestroy {
         value: value
       }
     }).subscribe(({data}: any) => {
+      console.log(data);
       this.widgets = [...this.widgets, data];
     });
     this.sub.add(createSub);
