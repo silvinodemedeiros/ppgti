@@ -30,7 +30,7 @@ class CellViewSet(viewsets.ModelViewSet):
         if self.action == 'update_by_id':
             return CellUpdate
         # Ação padrão para outros casos
-        return c
+        return CellSerializer
 
     def get_serializer_context(self):
         '''
