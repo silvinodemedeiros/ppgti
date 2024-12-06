@@ -60,7 +60,7 @@ export class GlWidgetsComponent implements OnInit, OnDestroy {
 
   getWidgets() {
     this.isWidgetListLoading = true;
-    const getSub = this.widgetService.getWidgets().subscribe(({data}) => {
+    const getSub = this.widgetService.getWidgets().subscribe((data) => {
       this.widgets = data;
       this.isWidgetListLoading = false;
     });

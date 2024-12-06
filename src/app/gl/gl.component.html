@@ -25,25 +25,24 @@
 
         <div class="gl-sidebar-list">
             
-            @for (item of (itemList$ | async); track item['id']) {
-                <div
-                    class="gl-sidebar-list-item gl-box"
-                    [draggable]="currentRoute.includes('widgets')"
-                    (dragstart)="onDragStart($event, item)"
-                >
-                    {{ item['name'] || item['value'] }}
-                </div>
-            }
+            <ng-container *ngIf="(itemList$ | async) as itemList$">
+                @for (item of itemList$; track item['id']) {
+                    <div
+                        class="gl-sidebar-list-item gl-box"
+                        [draggable]="currentRoute.includes('widgets')"
+                        (dragstart)="onDragStart($event, item)"
+                        (click)="assignGrid(item)"
+                    >
+                        {{ item['name'] || item['value'] }}
+                    </div>
+                }
 
-            @empty {
-                <div class="gl-sidebar-list-item gl-box gl-empty">
-                    {{
-                        isListLoading
-                        ? 'Loading...'
-                        : 'No Items'
-                    }}
-                </div>
-            }
+                @empty {
+                    <div class="gl-sidebar-list-item gl-box gl-empty">
+                        No Items
+                    </div>
+                }
+            </ng-container>
         </div>
 
         <app-gl-menu></app-gl-menu>
@@ -58,47 +57,54 @@
         </div>
 
         <div class="gl-grid-wrapper">
-            @for (cell of cells; track cell.id; let cIdx = $index) {
-                <div
-                    [ngClass]="{
-                        'gl-cell': true,
-                        'gl-box': true
-                    }"
-                    [ngStyle]="{
-                        'grid-area': cell.area
-                    }"
-                    (dragenter)="onDragEnter($event)"
-                    (dragleave)="onDragLeave($event)"
-                    (dragover)="onDragOver($event)"
-                    (drop)="onDrop($event, cIdx)"
-                >
-                    @if (cell.widget != null) {
-                        <div
-                            class="gl-widget"
-                            (click)="removeWidget(cIdx)"
-                        >
-                        <div class="gl-widget-header">
-                            <h2>{{ cell?.widget?.value }}</h2>
-                        </div>
-                        <div class="gl-widget-actions gl-flex-center">
-                            <button mat-icon-button matTooltip="Click to remove widget" matTooltipPosition="above">
-                                <mat-icon fontIcon="delete_outline"></mat-icon>
-                            </button>
-                        </div>
-                            <div class="gl-widget-content">
-                                <h1>
-                                    {{ currentWeather[cell?.widget?.type]?.value }}
-                                </h1>
+
+            <ng-container *ngIf="cells">
+                @for (cell of cells; track cell.id; let cIdx = $index) {
+                    <div
+                        [ngClass]="{
+                            'gl-cell': true,
+                            'gl-box': true
+                        }"
+                        [ngStyle]="{
+                            'grid-row-start': cell.row_start,
+                            'grid-column-start': cell.column_start,
+                            'grid-row-end': cell.row_end,
+                            'grid-column-end': cell.column_end
+                        }"
+                        (dragenter)="onDragEnter($event)"
+                        (dragleave)="onDragLeave($event)"
+                        (dragover)="onDragOver($event)"
+                        (drop)="onDrop($event, cIdx)"
+                    >
+                        @if (cell.widget != null) {
+                            <div class="gl-widget">
+                                <div class="gl-widget-header">
+                                    <h2>{{ cell?.widget?.value }}</h2>
+                                </div>
+                                <div class="gl-widget-actions gl-flex-center">
+                                    <button (click)="removeWidget(cIdx)" mat-icon-button matTooltip="Click to remove widget" matTooltipPosition="above">
+                                        <mat-icon fontIcon="delete_outline"></mat-icon>
+                                    </button>
+                                </div>
+                                <div class="gl-widget-content">
+                                    <h1 *ngIf="currentWeather; else isLoading">
+                                        {{ currentWeather[cell?.widget?.type]?.value }}
+                                    </h1>
+
+                                    <ng-template #isLoading>
+                                        <h1>carregando...</h1>
+                                    </ng-template>
+                                </div>
                             </div>
-                        </div>
-                    }
-                </div>
-            }
+                        }
+                    </div>
+                }
+            </ng-container>
         </div>
 
         
         <div class="gl-box gl-save-box">
-            <button class="save-button" mat-raised-button>Save Template</button>
+            <button class="save-button" mat-raised-button (click)="saveTemplate()">Save Template</button>
         </div>
     </div>
 

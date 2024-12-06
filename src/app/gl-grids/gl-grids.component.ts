@@ -68,7 +68,7 @@ export class GlGridsComponent {
 
   getGrids() {
     this.isGridListLoading = true;
-    const getSub = this.gridService.getGrids().subscribe(({data}) => {
+    const getSub = this.gridService.getGrids().subscribe((data) => {
       this.grids = data;
       this.isGridListLoading = false;
     });
@@ -109,7 +109,7 @@ export class GlGridsComponent {
     const cells$ = cells.map((c: any) => {
       return this.cellService.getCellById(c).pipe(
         switchMap((c) => {
-          return of({...c.data})
+          return of({...c})
         })
       );
     })

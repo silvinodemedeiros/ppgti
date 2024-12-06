@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,9 @@ export class CellService {
   ) { }
 
   getCellById(id: any) {
-    return this.httpClient.get<any>(this.cellUrl + '?id=' + id);
+    return this.httpClient.get<any>(this.cellUrl + '?id=' + id).pipe(
+      map(response => response.data)
+    );
   }
 
   createCell(data: any) {
