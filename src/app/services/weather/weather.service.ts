@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ export class WeatherService {
   ) { }
 
   getWeather() {
-    return this.httpClient.get<any>(this.weatherUrl);
+    return this.httpClient.get<any>(this.weatherUrl).pipe(
+      map(weather => weather.data)
+    );
   }
 }

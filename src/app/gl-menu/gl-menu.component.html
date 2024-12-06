@@ -3,22 +3,29 @@
     <div
         class="section-list-item gl-flex-center gl-box gl-box-hover"
         [routerLink]="['/editor']" [routerLinkActive]="'gl-box-active'"
+        [matTooltip]="'Editor'"
     >
         <mat-icon fontIcon="view_quilt"></mat-icon>
     </div>
     <div
         class="section-list-item gl-flex-center gl-box gl-box-hover"
         [routerLink]="['/widgets']" [routerLinkActive]="'gl-box-active'"
+        [matTooltip]="'Widgets'"
     >
         <mat-icon fontIcon="widgets"></mat-icon>
     </div>
     <div
         class="section-list-item gl-flex-center gl-box gl-box-hover"
         [routerLink]="['/grids']" [routerLinkActive]="'gl-box-active'"
+        [matTooltip]="'Grids'"
     >
         <mat-icon fontIcon="grid_4x4"></mat-icon>
     </div>
-    <div class="section-list-item gl-flex-center gl-box gl-box-hover">
+    <div
+        class="section-list-item gl-flex-center gl-box gl-box-hover"
+        [routerLink]="['/templates']" [routerLinkActive]="'gl-box-active'"
+        [matTooltip]="'Templates'"
+    >
         <mat-icon fontIcon="my_library_books"></mat-icon>
     </div>
 </div>

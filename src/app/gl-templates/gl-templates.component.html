@@ -1,0 +1,60 @@
+<div class="gl-wrapper">
+
+    <div class="gl-header gl-flex-center gl-box">
+        <h1>Templates</h1>
+    </div>
+    <div class="gl-sidebar">
+
+        <div class="gl-sidebar-list">
+            @for (tp of templates; track tp['id']; let wIdx = $index) {
+                <div
+                    class="gl-sidebar-list-item gl-box gl-box-hover"
+                    (click)="setCurrentTemplate(tp)"
+                >
+                    {{ tp.name }}
+                </div>
+            }
+
+            @empty {
+                <div class="gl-sidebar-list-item gl-box gl-box-hover gl-empty">
+                    {{
+                        isTemplateListLoading
+                        ? 'Loading...'
+                        : 'No Templates'
+                    }}
+                </div>
+            }
+        </div>
+
+        <app-gl-menu></app-gl-menu>
+    </div>
+    <div class="gl-content gl-flex-center">
+        <div class="gl-grid-wrapper gl-box">
+            <h2>{{currentTemplateId ? 'Edit' : 'Create'}} Template</h2>
+            <form class="example-form" [formGroup]="form">
+                <div class="gl-box gl-form-field">
+                    <h3>Name</h3>
+                    <mat-form-field>
+                        <mat-label>Template Name</mat-label>
+                        <input formControlName="name" matInput>
+                    </mat-form-field>
+                </div>
+                
+                <div class="gl-box gl-form-field">
+                    <h3>Grid</h3>
+                    <mat-form-field>
+                        <mat-label>Grid Id</mat-label>
+                        <input formControlName="name" matInput>
+                    </mat-form-field>
+                </div>
+            </form>
+
+            <button class="save-button" mat-raised-button (click)="createTemplate()">Save Template</button>
+
+            @if (currentTemplateId != null) {
+                <button mat-raised-button (click)="deleteTemplate()" color="warn">Delete Template</button>
+            }
+        </div>
+    </div>
+
+</div>

@@ -18,7 +18,13 @@
 
     .gl-header {
         grid-area: header;
-        align-items: flex-start;
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+
+        h1 {
+            margin: 0;
+        }
     }
 
     .gl-sidebar {
@@ -27,14 +33,41 @@
 
     .gl-content {
         grid-area: content;
-        padding: 1rem;
     }
 }
 
 .gl-sidebar {
     display: grid;
-    grid-template-rows: 1fr 4rem;
+    grid-template-rows: 5rem 1fr 4rem;
     gap: 1rem;
+
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        &-tab {
+            color: lightgray;
+            transform-origin: center center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all .15s ease;
+
+            &:hover {
+                transform: scale(1.2);
+                color: gray;
+            }
+            
+            &.selected-tab {
+                color: gray;
+                transform: scale(1.2);
+                font-weight: bold;
+                line-height: 1.5rem;
+                border-bottom: 2px solid gray;
+            }
+        }
+    }
 
     &-list {
         display: flex;
@@ -56,7 +89,12 @@
             width: calc(100% - 5px);
             min-height: 5rem;
             cursor: grab;
+
+            &.gl-empty {
+                pointer-events: none !important;
+            }
         }
+
     }
 
     &-action {
@@ -65,15 +103,17 @@
 }
 
 .gl-content {
-    background: lightgrey;
-
+    display: grid;
+    grid-template-rows: auto 1fr 4rem;
+    grid-gap: 1rem;
+    
     .gl-grid-wrapper {
+        padding: 1rem;
+        background: lightgrey;
         display: grid;
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr;
         grid-gap: 1rem;
-        width: 100%;
-        height: 100%;
     }
     
     .gl-cell {
@@ -84,6 +124,28 @@
             background: papayawhip;
         }
     }
+
+    .gl-form-field {
+        display: grid;
+        grid-template-columns: 6rem 1fr;
+        grid-gap: 1rem;
+        padding: 1rem 1rem 0 1rem;
+
+        h3 {
+            width: 6rem;
+        }
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+
+    .gl-save-box {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 1rem;
+    }
 }
 
 .gl-widget {
@@ -93,7 +155,8 @@
     grid-template-areas:
         "header actions"
         "content content";
-    align-items: start;
+    justify-items: center;
+    align-items: center;
     height: calc(100% - 2rem);
 
     &-header {
@@ -103,6 +166,10 @@
         & > * {
             margin: 0;
         }
+    }
+
+    &-actions {
+        grid-area: actions;
     }
 
     &-content {

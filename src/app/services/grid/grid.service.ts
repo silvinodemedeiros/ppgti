@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CellService } from '../cell/cell.service';
-import { forkJoin, of, switchMap } from 'rxjs';
+import { forkJoin, map, of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,9 @@ export class GridService {
   ) { }
 
   getGrids() {
-    return this.httpClient.get<any>(this.gridApiUrl);
+    return this.httpClient.get<any>(this.gridApiUrl).pipe(
+      map(gridList => gridList.data)
+    );
   }
 
   createGrid(name: any, cells: any) {
@@ -34,7 +36,7 @@ export class GridService {
         return this.httpClient.post<any>(this.gridApiUrl, {
           data: {
             name,
-            cells: createdCells.map((cell: any) => cell.code)
+            cells: createdCells.map((cell: any) => cell.id)
           }
         })
       })

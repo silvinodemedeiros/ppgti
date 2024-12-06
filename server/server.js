@@ -166,7 +166,7 @@ app.get('/cell', async (req, res) => {
         console.error('Error fetching data from remote API:', error.message);
         res.status(500).json({
             message: 'Failed to fetch data from remote API',
-            error: error.message
+            error
         });
     }
 });

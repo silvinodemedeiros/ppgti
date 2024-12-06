@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { forkJoin, of, Subscription, switchMap } from 'rxjs';
 import { GridService } from '../services/grid/grid.service';
 import { CellService } from '../services/cell/cell.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-gl-grids',
@@ -27,6 +28,8 @@ import { CellService } from '../services/cell/cell.service';
   styleUrl: './gl-grids.component.less'
 })
 export class GlGridsComponent {
+
+  private _snackBar = inject(MatSnackBar);
 
   sub = new Subscription();
   isGridListLoading = false;
@@ -139,6 +142,9 @@ export class GlGridsComponent {
 
     const createSub = this.gridService.createGrid(name, cells).subscribe(() => {
       this.getGrids();
+      this.form.reset();
+      
+      this._snackBar.open('Grid created successfully!', 'OK');
     });
 
     this.sub.add(createSub);

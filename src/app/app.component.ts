@@ -24,9 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    const sub = this.weatherService.getWeather().subscribe(
-      ({data}) => console.log(data)
-    );
+    const sub = this.weatherService.getWeather().subscribe(console.log);
 
     this.subscription.add(sub);
   }

@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { WidgetService } from '../services/widget/widget.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-gl-widgets',
@@ -28,6 +29,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
   styleUrl: './gl-widgets.component.less'
 })
 export class GlWidgetsComponent implements OnInit, OnDestroy {
+
+  private _snackBar = inject(MatSnackBar);
 
   widgets: any = [];
   sub = new Subscription();
@@ -89,8 +92,9 @@ export class GlWidgetsComponent implements OnInit, OnDestroy {
         value: value
       }
     }).subscribe(({data}: any) => {
-      console.log(data);
       this.widgets = [...this.widgets, data];
+      this.form.reset();
+      this._snackBar.open('Widget created successfully!', 'OK');
     });
     this.sub.add(createSub);
   }

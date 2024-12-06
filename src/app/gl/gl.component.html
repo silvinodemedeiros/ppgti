@@ -1,28 +1,46 @@
 <div class="gl-wrapper">
 
-    <div class="gl-header gl-box gl-flex-center">
+    <div class="gl-header gl-box">
         <h1>Editor</h1>
     </div>
     <div class="gl-sidebar">
 
+        <div class="gl-sidebar-header gl-box">
+            <a
+                class="gl-sidebar-header-tab"
+                [routerLink]="['/editor/widgets']"
+                [routerLinkActive]="'selected-tab'"
+            >widgets</a>
+            <a
+                class="gl-sidebar-header-tab"
+                [routerLink]="['/editor/grids']"
+                [routerLinkActive]="'selected-tab'"
+            >grids</a>
+            <a
+                class="gl-sidebar-header-tab"
+                [routerLink]="['/editor/templates']"
+                [routerLinkActive]="'selected-tab'"
+            >templates</a>
+        </div>
+
         <div class="gl-sidebar-list">
-            @for (wi of widgets; track wi['id']; let wIdx = $index) {
+            
+            @for (item of (itemList$ | async); track item['id']) {
                 <div
                     class="gl-sidebar-list-item gl-box"
-                    [id]="'wi-opt-' + wIdx"
-                    [draggable]="true"
-                    (dragstart)="onDragStart($event, wi)"
+                    [draggable]="currentRoute.includes('widgets')"
+                    (dragstart)="onDragStart($event, item)"
                 >
-                    {{ wi['value'] }}
+                    {{ item['name'] || item['value'] }}
                 </div>
             }
 
             @empty {
-                <div class="gl-sidebar-list-item gl-box">
+                <div class="gl-sidebar-list-item gl-box gl-empty">
                     {{
                         isListLoading
                         ? 'Loading...'
-                        : 'No Widgets'
+                        : 'No Items'
                     }}
                 </div>
             }
@@ -30,13 +48,20 @@
 
         <app-gl-menu></app-gl-menu>
     </div>
-    <div class="gl-content gl-box">
+    <div class="gl-content" [formGroup]="form">
+        <div class="gl-box gl-form-field">
+            <h3>Name</h3>
+            <mat-form-field>
+                <mat-label>Template Name</mat-label>
+                <input formControlName="name" matInput placeholder="Choose a name for your template...">
+            </mat-form-field>
+        </div>
+
         <div class="gl-grid-wrapper">
             @for (cell of cells; track cell.id; let cIdx = $index) {
                 <div
                     [ngClass]="{
                         'gl-cell': true,
-                        'gl-flex-center': true,
                         'gl-box': true
                     }"
                     [ngStyle]="{
@@ -52,19 +77,29 @@
                             class="gl-widget"
                             (click)="removeWidget(cIdx)"
                         >
-                            <div class="gl-widget-header">
-                                <h2>{{ cell?.widget?.value }}</h2>
-                            </div>
+                        <div class="gl-widget-header">
+                            <h2>{{ cell?.widget?.value }}</h2>
+                        </div>
+                        <div class="gl-widget-actions gl-flex-center">
+                            <button mat-icon-button matTooltip="Click to remove widget" matTooltipPosition="above">
+                                <mat-icon fontIcon="delete_outline"></mat-icon>
+                            </button>
+                        </div>
                             <div class="gl-widget-content">
-                                <span>
+                                <h1>
                                     {{ currentWeather[cell?.widget?.type]?.value }}
-                                </span>
+                                </h1>
                             </div>
                         </div>
                     }
                 </div>
             }
-        </div>        
+        </div>
+
+        
+        <div class="gl-box gl-save-box">
+            <button class="save-button" mat-raised-button>Save Template</button>
+        </div>
     </div>
 
 </div>
