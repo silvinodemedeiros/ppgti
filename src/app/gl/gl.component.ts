@@ -2,11 +2,19 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatIconModule} from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, ResolveEnd, ResolveStart, Router, RouterModule, RoutesRecognized } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
 import { WidgetService } from '../services/widget/widget.service';
-import { Subscription } from 'rxjs';
+import { filter, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { WeatherService } from '../services/weather/weather.service';
+import { GridService } from '../services/grid/grid.service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TemplateService } from '../services/template/template.service';
+import { AsyncLoadingPipe } from '../pipes/async-loading.pipe';
+import { CellService } from '../services/cell/cell.service';
 
 @Component({
   selector: 'app-gl',
@@ -16,7 +24,11 @@ import { WeatherService } from '../services/weather/weather.service';
     CommonModule,
     RouterModule,
     DragDropModule,
-    MatIconModule
+    MatIconModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatTooltipModule
   ],
   exportAs: 'GlComponent',
   templateUrl: './gl.component.html',
@@ -26,57 +38,92 @@ export class GlComponent implements OnInit, OnDestroy {
 
   subscription = new Subscription();
   
-  widgets = [];
   currentWeather: any;
+  currentGrid: any;
 
-  isWidgetListLoading = false;
+  isListLoading = false;
+  cells: any;
 
-  cells: any[] = [
-    {
-      id: 1,
-      area: '1 / 1 / 2 / 2',
-      widget: null
-    },
-    {
-      id: 2,
-      area: '1 / 2 / 3 / 2',
-      widget: null
-    },
-    {
-      id: 3,
-      area: '2 / 1 / 2 / 1',
-      widget: null
-    }
-  ];
+  form = this.fb.group({
+    name: [null, Validators.required]
+  });
+
+  get widgets$(): Observable<any[]> {
+    return this.widgetService.getWidgets();
+  }
+
+  get grids$(): any {
+    return this.gridService.getGrids();
+  }
+
+  get templates$(): any {
+    return this.templateService.getTemplates();
+  }
+
+  itemList$: Observable<any> = of(undefined);
+  currentRoute: any;
 
   constructor(
     private widgetService: WidgetService,
-    private weatherService: WeatherService
+    private gridService: GridService,
+    private cellService: CellService,
+    private templateService: TemplateService,
+    private weatherService: WeatherService,
+    private fb: FormBuilder,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.isWidgetListLoading = true;
-    const s = this.widgetService.getWidgets().subscribe(({data}) => {
-      this.widgets = data;
-      this.isWidgetListLoading = false;
+
+    this.itemList$
+    this.activatedRoute.url.subscribe((urlSegments) => {
+
+      this.currentRoute = urlSegments.map((segment) => segment.path).join('/');
+
+      if (this.currentRoute.includes('widgets')) {
+        this.itemList$ = this.widgets$;
+      } else if (this.currentRoute.includes('grids')) {
+        this.itemList$ = this.grids$;
+      } else if (this.currentRoute.includes('templates')) {
+        this.itemList$ = this.templates$;
+      }
+
+      this.isListLoading = false;
     });
 
     const sub = this.weatherService.getWeather().subscribe(
-      ({data}) => {
-        this.currentWeather = data;
+      (response) => {
+        this.currentWeather = response;
       }
     );
 
+    this.cells = JSON.parse(localStorage.getItem('storedCells') as string);
+
     this.subscription.add(sub);
-    this.subscription.add(s);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
+  store() {
+    localStorage.setItem('storedCells', JSON.stringify(this.cells));
+  }
+
+  assignGrid(grid: any) {
+    const cellRequests = grid.cells.map((cellId: any) => {
+      return this.cellService.getCellById(cellId);
+    });
+
+    forkJoin(cellRequests).subscribe((cellList: any) => {
+      this.cells = [...cellList];
+      this.store();
+    })
+  }
+
   removeWidget(cellIndex: any): void {
-    this.cells = this.cells.map((cell, index) => {
+    this.cells = (this.cells as any[]).map((cell, index) => {
       if (index === cellIndex) {
         return {
           ...cell,
@@ -86,6 +133,12 @@ export class GlComponent implements OnInit, OnDestroy {
 
       return cell;
     });
+
+    this.store();
+  }
+
+  saveTemplate() {
+    console.log(this.form.value, this.cells);
   }
 
   onDragStart(ev: any, widget: any) {
@@ -114,7 +167,7 @@ export class GlComponent implements OnInit, OnDestroy {
       ev.target.classList.remove('gl-cell-hover');
     }
 
-    this.cells = this.cells.map((cell, index) => {
+    this.cells = (this.cells as any[]).map((cell, index) => {
       if (index === cellIndex) {
         return {
           ...cell,
@@ -124,5 +177,7 @@ export class GlComponent implements OnInit, OnDestroy {
 
       return cell;
     });
+
+    this.store();
   }
 }

@@ -6,7 +6,23 @@ const app = express();
 const PORT = 3000;
 const USERNAME = 'admin@admin.com';
 const PASSWORD = 'admin';
-const REMOTE_API_URL = 'https://2da9-177-20-152-125.ngrok-free.app/';
+const AUTH_HEADER = {
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Basic ' + Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64')
+    }
+};
+
+const WIDGET_URI = '/layout/widget';
+const WEATHER_URI = '/climate/weather';
+const GRID_URI = '/layout/grid';
+const CELL_URI = '/layout/cell';
+
+const REMOTE_API_URL = 'http://localhost:8000/api/v1';
+const WIDGET_API_URL = REMOTE_API_URL + WIDGET_URI;
+const WEATHER_API_URL = REMOTE_API_URL + WEATHER_URI;
+const GRID_API_URL = REMOTE_API_URL + GRID_URI;
+const CELL_API_URL = REMOTE_API_URL + CELL_URI;
 
 app.use(cors({
     origin: 'http://localhost:4200'
@@ -16,13 +32,7 @@ app.use(express.json());
 
 app.get('/weather', async (req, res) => {
     try {
-        const authHeader = 'Basic ' + Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64');
-
-        const response = await axios.get(REMOTE_API_URL + '/api/v1/climate/weather/', {
-            headers: {
-                Authorization: authHeader
-            }
-        });
+        const response = await axios.get(WEATHER_API_URL, AUTH_HEADER);
 
         res.json({
             message: 'Data fetched successfully from remote API',
@@ -37,15 +47,9 @@ app.get('/weather', async (req, res) => {
     }
 });
 
-app.get('/widgets', async (req, res) => {
+app.get('/widget', async (req, res) => {
     try {
-        const authHeader = 'Basic ' + Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64');
-
-        const response = await axios.get(REMOTE_API_URL + '/api/v1/layout/widget/', {
-            headers: {
-                Authorization: authHeader
-            }
-        });
+        const response = await axios.get(WIDGET_API_URL, AUTH_HEADER);
 
         res.json({
             message: 'Data fetched successfully from remote API',
@@ -60,19 +64,12 @@ app.get('/widgets', async (req, res) => {
     }
 });
 
-app.post('/widgets/create', async (req, res) => {
+app.post('/widget', async (req, res) => {
     try {
-        const authHeader = 'Basic ' + Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64');
-
-        const response = await axios.post(REMOTE_API_URL + '/api/v1/layout/widget/', req.body.data, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: authHeader
-            }
-        });
+        const response = await axios.post(WIDGET_API_URL + '/create/', req.body.data, AUTH_HEADER);
 
         res.json({
-            message: 'Data fetched successfully from remote API',
+            message: 'Entity created successfully through remote API',
             data: response.data
         });
     } catch (error) {
@@ -84,18 +81,11 @@ app.post('/widgets/create', async (req, res) => {
     }
 });
 
-app.delete('/widgets/delete', async (req, res) => {
+app.delete('/widget', async (req, res) => {
     try {
-        const authHeader = 'Basic ' + Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64');
-
         const id = req.query.id;
 
-        const response = await axios.delete(REMOTE_API_URL + '/api/v1/layout/widget/delete_by_id/'+id+'/', {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: authHeader
-            }
-        });
+        const response = await axios.delete(WIDGET_API_URL + '/delete_by_id/' + id + '/', AUTH_HEADER);
 
         res.json({
             message: 'Data fetched successfully from remote API',
@@ -110,19 +100,83 @@ app.delete('/widgets/delete', async (req, res) => {
     }
 });
 
-app.get('/grids', async (req, res) => {
+app.get('/grid', async (req, res) => {
     try {
-        const authHeader = 'Basic ' + Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64');
-
-        const response = await axios.get(REMOTE_API_URL + '/api/v1/layout/grid', {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: authHeader
-            }
-        });
+        const response = await axios.get(GRID_API_URL, AUTH_HEADER);
 
         res.json({
             message: 'Data fetched successfully from remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error: error.message
+        });
+    }
+});
+
+app.post('/grid', async (req, res) => {
+    try {
+        const response = await axios.post(GRID_API_URL + '/create/', req.body.data, AUTH_HEADER);
+
+        res.json({
+            message: 'Entity created successfully through remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error
+        });
+    }
+});
+
+app.delete('/grid', async (req, res) => {
+    try {
+        const id = req.query.id;
+
+        const response = await axios.delete(GRID_API_URL + '/delete_by_id/' + id + '/', AUTH_HEADER);
+
+        res.json({
+            message: 'Data fetched successfully from remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error: error.message
+        });
+    }
+});
+
+app.get('/cell', async (req, res) => {
+    try {
+        const id = req.query.id;
+        const response = await axios.get(CELL_API_URL + '/get_by_id/' + id +'/', AUTH_HEADER);
+
+        res.json({
+            message: 'Data fetched successfully from remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error
+        });
+    }
+});
+
+app.post('/cell', async (req, res) => {
+    try {
+        const response = await axios.post(CELL_API_URL + '/create/', req.body.data, AUTH_HEADER);
+
+        res.json({
+            message: 'Entity created successfully through remote API',
             data: response.data
         });
     } catch (error) {

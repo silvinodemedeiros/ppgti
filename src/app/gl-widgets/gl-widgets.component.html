@@ -9,10 +9,9 @@
             @for (wi of widgets; track wi['id']; let wIdx = $index) {
                 <div
                     class="gl-sidebar-list-item gl-box gl-box-hover"
-                    [id]="'wi-opt-' + wIdx"
                     (click)="setCurrentWidget(wi)"
                 >
-                    {{ wi['value'] }}
+                    #{{ wi.id }} - {{ wi.value }}
                 </div>
             }
 

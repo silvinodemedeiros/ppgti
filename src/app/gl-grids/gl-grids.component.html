@@ -6,18 +6,17 @@
     <div class="gl-sidebar">
 
         <div class="gl-sidebar-list">
-            @for (wi of widgets; track wi['id']; let wIdx = $index) {
+            @for (gr of grids; track gr['id']; let wIdx = $index) {
                 <div
                     class="gl-sidebar-list-item gl-box gl-box-hover"
-                    [id]="'wi-opt-' + wIdx"
-                    (click)="setCurrentGrid(wi)"
+                    (click)="setCurrentGrid(gr)"
                 >
-                    {{ wi['value'] }}
+                    #{{ gr.id }} - {{ gr.name }}
                 </div>
             }
 
             @empty {
-                <div class="gl-sidebar-list-item gl-box">
+                <div class="gl-sidebar-list-item gl-box gl-box-hover gl-empty">
                     {{
                         isGridListLoading
                         ? 'Loading...'
@@ -30,39 +29,56 @@
         <div class="gl-sidebar-action gl-flex-center gl-box gl-box-hover"
             (click)="createGrid()"
         >
-            <mat-icon fontIcon="add"></mat-icon> Create New Widget
+            <mat-icon fontIcon="add"></mat-icon> Create New Grid
         </div>
 
         <app-gl-menu></app-gl-menu>
     </div>
     <div class="gl-content gl-flex-center">
         <div class="gl-grid-wrapper gl-box">
-            <h2>{{currentGrid ? 'Edit' : 'Create'}} Grid</h2>
+            <h2>{{currentGridId ? 'Edit' : 'Create'}} Grid</h2>
             <form class="example-form" [formGroup]="form">
-                <div class="gl-box">
-                    <div class="gl-flex-center">
-                        <mat-form-field>
-                            <mat-label>Row Start</mat-label>
-                            <input formControlName="rowStart" matInput>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Column Start</mat-label>
-                            <input formControlName="columnStart" matInput>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Row End</mat-label>
-                            <input formControlName="rowEnd" matInput>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Column End</mat-label>
-                            <input formControlName="columnEnd" matInput>
-                        </mat-form-field>
-                    </div>
+                <div class="gl-box gl-form-field">
+                    <h3>Name</h3>
+                    <mat-form-field>
+                        <mat-label>Grid Name</mat-label>
+                        <input formControlName="name" matInput>
+                    </mat-form-field>
                 </div>
+                <h2>Cells</h2>
+                <ng-container formArrayName="cells">
+                    <ng-container *ngFor="let section of cells.controls; let faIdx = index">
+                        <div class="gl-box">
+                            <div [formGroupName]="faIdx" class="gl-flex-center">
+                                <mat-form-field>
+                                    <mat-label>Row Start</mat-label>
+                                    <input formControlName="rowStart" matInput>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Column Start</mat-label>
+                                    <input formControlName="columnStart" matInput>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Row End</mat-label>
+                                    <input formControlName="rowEnd" matInput>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Column End</mat-label>
+                                    <input formControlName="columnEnd" matInput>
+                                </mat-form-field>
+                                <span *ngIf="faIdx != 0" (click)="removeCellGroup(faIdx)">
+                                    click to remove
+                                </span>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
             </form>
 
             <button class="save-button" mat-raised-button (click)="createGrid()">Save Grid</button>
-            @if (currentGrid != null) {
+            <button class="save-button" mat-raised-button (click)="addCellGroup()">Add Cell</button>
+
+            @if (currentGridId != null) {
                 <button mat-raised-button (click)="deleteGrid()" color="warn">Delete Grid</button>
             }
         </div>
