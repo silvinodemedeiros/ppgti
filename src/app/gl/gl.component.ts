@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatIconModule} from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, ResolveEnd, ResolveStart, Router, RouterModule, RoutesRecognized } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
 import { WidgetService } from '../services/widget/widget.service';
-import { filter, forkJoin, Observable, of, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { WeatherService } from '../services/weather/weather.service';
 import { GridService } from '../services/grid/grid.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TemplateService } from '../services/template/template.service';
 import { AsyncLoadingPipe } from '../pipes/async-loading.pipe';
 import { CellService } from '../services/cell/cell.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-gl',
@@ -35,6 +36,8 @@ import { CellService } from '../services/cell/cell.service';
   styleUrl: './gl.component.less'
 })
 export class GlComponent implements OnInit, OnDestroy {
+  
+  private _snackBar = inject(MatSnackBar);
 
   subscription = new Subscription();
   
@@ -111,15 +114,64 @@ export class GlComponent implements OnInit, OnDestroy {
     localStorage.setItem('storedCells', JSON.stringify(this.cells));
   }
 
+  handleListItemClick(item: any) {
+    if (this.currentRoute.includes('grids')) {
+      this.assignGrid(item);
+    } else if (this.currentRoute.includes('templates')) {
+      this.assignTemplate(item);
+    }
+  }
+
+  clearTemplate() {
+    this.cells = [];
+    localStorage.removeItem('storedCells');
+  }
+
   assignGrid(grid: any) {
     const cellRequests = grid.cells.map((cellId: any) => {
       return this.cellService.getCellById(cellId);
     });
 
     forkJoin(cellRequests).subscribe((cellList: any) => {
-      this.cells = [...cellList];
+      this.cells = cellList.map((cell: any) => ({
+        ...cell,
+        widget: null
+      }));
       this.store();
-    })
+    });
+  }
+
+  assignTemplate(template: any) {
+
+    const gridSub = this.gridService.getGridById(template.grids[0]).subscribe((data) => {
+      
+      this.form.get('name')?.setValue(template.name);
+
+      const templateGrid = data.filter((grid: any) => grid.id === template.grids[0])[0];
+
+      const cellRequests = templateGrid.cells.map((cellId: any) => {
+        return this.cellService.getCellById(cellId);
+      });
+  
+      forkJoin(cellRequests).subscribe((cellList: any) => {
+        this.cells = [...cellList];
+
+        this.cells.forEach((cell: any, index: number) => {
+          if (cell.widget) {
+            this.widgetService.getWidgetById(cell.widget).subscribe((widget) => {
+
+              const cellWidget = widget.filter((cw: any) => cw.id === cell.widget)[0]
+              this.cells[index].widget = cellWidget;
+            });
+          }
+        });
+
+        this.store();
+      });
+
+    });
+
+    this.subscription.add(gridSub);
   }
 
   removeWidget(cellIndex: any): void {
@@ -139,7 +191,15 @@ export class GlComponent implements OnInit, OnDestroy {
 
   saveTemplate() {
     console.log(this.form.value, this.cells);
+
+    const sub = this.templateService.createTemplate(this.form.value.name, this.cells).subscribe(() => {
+
+    
+      this._snackBar.open('Template created successfully!', 'OK');
+    });
   }
+
+
 
   onDragStart(ev: any, widget: any) {
     const widgetJson = JSON.stringify(widget);

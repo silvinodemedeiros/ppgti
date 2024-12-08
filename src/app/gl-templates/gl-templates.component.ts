@@ -47,6 +47,10 @@ export class GlTemplatesComponent {
   ) {}
 
   ngOnInit(): void {
+    localStorage.removeItem('storedCells');
+    this.templateService.getTemplates().subscribe((response) => {
+      this.templates = response;
+    });
   }
 
   ngOnDestroy(): void {
@@ -56,12 +60,16 @@ export class GlTemplatesComponent {
   getTemplates() {
   }
 
-  setCurrentTemplate(grid: any = null) {
-  }
-
-  createTemplate() {
+  setCurrentTemplate(template: any = null) {
+    this.currentTemplateId = template.id;
+    this.form.get('name')?.setValue(template.name);
   }
 
   deleteTemplate() {
+    const createSub = this.templateService.deleteTemplate(this.currentTemplateId).subscribe((data) => {
+      this.setCurrentTemplate();
+      this.getTemplates();
+    });
+    this.sub.add(createSub);
   }
 }

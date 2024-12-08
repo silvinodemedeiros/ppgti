@@ -28,10 +28,15 @@
             <ng-container *ngIf="(itemList$ | async) as itemList$">
                 @for (item of itemList$; track item['id']) {
                     <div
-                        class="gl-sidebar-list-item gl-box"
+                        [ngClass]="{
+                            'gl-sidebar-list-item': true,
+                            'gl-box': true,
+                            'gl-box-hover': !currentRoute.includes('widgets'),
+                            'widget-item': currentRoute.includes('widgets')
+                        }"
                         [draggable]="currentRoute.includes('widgets')"
                         (dragstart)="onDragStart($event, item)"
-                        (click)="assignGrid(item)"
+                        (click)="handleListItemClick(item)"
                     >
                         {{ item['name'] || item['value'] }}
                     </div>
@@ -96,6 +101,12 @@
                                     </ng-template>
                                 </div>
                             </div>
+                        } @else {
+                            <div class="gl-widget gl-flex-center">
+                                <div></div>
+                                <div></div>
+                                <mat-icon fontIcon="add"></mat-icon>
+                            </div>
                         }
                     </div>
                 }
@@ -104,7 +115,8 @@
 
         
         <div class="gl-box gl-save-box">
-            <button class="save-button" mat-raised-button (click)="saveTemplate()">Save Template</button>
+            <button class="save-button" mat-raised-button (click)="saveTemplate()" style="margin-right: 1rem;">Save Template</button>
+            <button class="save-button" mat-raised-button (click)="clearTemplate()">Clear</button>
         </div>
     </div>
 

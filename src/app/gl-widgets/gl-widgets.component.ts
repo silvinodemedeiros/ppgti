@@ -51,6 +51,7 @@ export class GlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem('storedCells');
     this.getWidgets();
   }
 

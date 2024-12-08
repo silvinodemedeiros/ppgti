@@ -40,10 +40,10 @@ export class GlGridsComponent {
     name: [null, Validators.required],
     cells: this.fb.array([
       this.fb.group({
-        rowStart: [null, Validators.required],
-        columnStart: [null, Validators.required],
-        rowEnd: [null, Validators.required],
-        columnEnd: [null, Validators.required]
+        row_start: [null, Validators.required],
+        column_start: [null, Validators.required],
+        row_end: [null, Validators.required],
+        column_end: [null, Validators.required]
       })
     ])
   });
@@ -59,6 +59,7 @@ export class GlGridsComponent {
   ) {}
 
   ngOnInit(): void {
+    localStorage.removeItem('storedCells');
     this.getGrids();
   }
 
@@ -78,10 +79,10 @@ export class GlGridsComponent {
 
   createCellGroup(): FormGroup {
     return this.fb.group({
-      rowStart: [null, Validators.required],
-      columnStart: [null, Validators.required],
-      rowEnd: [null, Validators.required],
-      columnEnd: [null, Validators.required]
+      row_start: [null, Validators.required],
+      column_start: [null, Validators.required],
+      row_end: [null, Validators.required],
+      column_end: [null, Validators.required]
     });
   }
 
@@ -112,7 +113,7 @@ export class GlGridsComponent {
           return of({...c})
         })
       );
-    })
+    });
 
     const curSub = forkJoin(...cells$).subscribe({
       next: (cellObjs) => {
@@ -125,10 +126,10 @@ export class GlGridsComponent {
           const {row_start, column_start, row_end, column_end} = cell;
         
           const cellGroup = this.createCellGroup();
-          cellGroup.get('rowStart')?.setValue(row_start);
-          cellGroup.get('columnStart')?.setValue(column_start);
-          cellGroup.get('rowEnd')?.setValue(row_end);
-          cellGroup.get('columnEnd')?.setValue(column_end);
+          cellGroup.get('row_start')?.setValue(row_start);
+          cellGroup.get('column_start')?.setValue(column_start);
+          cellGroup.get('row_end')?.setValue(row_end);
+          cellGroup.get('column_end')?.setValue(column_end);
           this.addCellGroup(cellGroup);
         });
       }
