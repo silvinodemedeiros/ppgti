@@ -38,7 +38,7 @@
 
 .gl-sidebar {
     display: grid;
-    grid-template-rows: 5rem 1fr 4rem;
+    grid-template-rows: 6rem 1fr 4rem;
     gap: 1rem;
 
     &-header {
@@ -88,7 +88,18 @@
             justify-items: center;
             width: calc(100% - 5px);
             min-height: 5rem;
-            cursor: grab;
+
+            &.widget-item {
+                cursor: grab;
+                border: 3px dashed lightgrey;
+                transition: all .15s ease;
+                color: lightgrey;
+
+                &:hover {
+                    border-color: grey;
+                    color: grey;
+                }
+            }
 
             &.gl-empty {
                 pointer-events: none !important;
@@ -109,11 +120,16 @@
     
     .gl-grid-wrapper {
         padding: 1rem;
-        background: lightgrey;
         display: grid;
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr;
         grid-gap: 1rem;
+
+        
+ 
+        background: #ddd;
+        background-image: linear-gradient(#eee .1em, transparent .1em), linear-gradient(90deg, #eee .1em, transparent .1em);
+        background-size: 3em 3em;
     }
     
     .gl-cell {

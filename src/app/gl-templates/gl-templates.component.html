@@ -11,7 +11,7 @@
                     class="gl-sidebar-list-item gl-box gl-box-hover"
                     (click)="setCurrentTemplate(tp)"
                 >
-                    {{ tp.name }}
+                    #{{ tp.id }} - {{ tp.name }}
                 </div>
             }
 
@@ -39,17 +39,7 @@
                         <input formControlName="name" matInput>
                     </mat-form-field>
                 </div>
-                
-                <div class="gl-box gl-form-field">
-                    <h3>Grid</h3>
-                    <mat-form-field>
-                        <mat-label>Grid Id</mat-label>
-                        <input formControlName="name" matInput>
-                    </mat-form-field>
-                </div>
             </form>
-
-            <button class="save-button" mat-raised-button (click)="createTemplate()">Save Template</button>
 
             @if (currentTemplateId != null) {
                 <button mat-raised-button (click)="deleteTemplate()" color="warn">Delete Template</button>

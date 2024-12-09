@@ -21,6 +21,12 @@ export class GridService {
     );
   }
 
+  getGridById(id: any) {
+    return this.httpClient.get<any>(this.gridApiUrl + '?id=' + id).pipe(
+      map(gridList => gridList.data)
+    );
+  }
+
   createGrid(name: any, cells: any) {
 
     const cellRequests = cells.map((cell: any) => {

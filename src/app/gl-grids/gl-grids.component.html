@@ -52,19 +52,19 @@
                             <div [formGroupName]="faIdx" class="gl-flex-center">
                                 <mat-form-field>
                                     <mat-label>Row Start</mat-label>
-                                    <input formControlName="rowStart" matInput>
+                                    <input formControlName="row_start" matInput>
                                 </mat-form-field>
                                 <mat-form-field>
                                     <mat-label>Column Start</mat-label>
-                                    <input formControlName="columnStart" matInput>
+                                    <input formControlName="column_start" matInput>
                                 </mat-form-field>
                                 <mat-form-field>
                                     <mat-label>Row End</mat-label>
-                                    <input formControlName="rowEnd" matInput>
+                                    <input formControlName="row_end" matInput>
                                 </mat-form-field>
                                 <mat-form-field>
                                     <mat-label>Column End</mat-label>
-                                    <input formControlName="columnEnd" matInput>
+                                    <input formControlName="column_end" matInput>
                                 </mat-form-field>
                                 <span *ngIf="faIdx != 0" (click)="removeCellGroup(faIdx)">
                                     click to remove

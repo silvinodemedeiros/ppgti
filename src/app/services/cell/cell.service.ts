@@ -20,13 +20,20 @@ export class CellService {
   }
 
   createCell(data: any) {
-    const { rowStart, columnStart, rowEnd, columnEnd } = data;
-    const payload = {
-      row_start: rowStart,
-      column_start: columnStart,
-      row_end: rowEnd,
-      column_end: columnEnd
+    const { row_start, column_start, row_end, column_end, widget } = data;
+    let payload = {
+      row_start,
+      column_start,
+      row_end,
+      column_end,
+      widget
     };
+
+    if (widget) {
+      payload.widget = widget.id;
+    } else {
+      delete payload.widget;
+    }
     
     return this.httpClient.post<any>(this.cellUrl, {
       data: payload

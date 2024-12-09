@@ -17,6 +17,12 @@ export class WidgetService {
     );
   }
 
+  getWidgetById(id: any) {
+    return this.httpClient.get<any>(this.widgetApiUrl + '?id=' + id).pipe(
+      map(widgetList => widgetList.data)
+    );
+  }
+
   createWidget(data: any) {
     return this.httpClient.post<any>(this.widgetApiUrl, data);
   }
