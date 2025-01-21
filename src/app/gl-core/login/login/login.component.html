@@ -1,0 +1,34 @@
+<div class="gl-login">
+    <div class="login-wrapper">
+        <h1>Welcome to Goldlink</h1>
+        
+        <form [formGroup]="loginForm">
+            <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input
+                    formControlName="username"
+                    matInput
+                    placeholder="Insert your username"
+                >
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input
+                    type="password"
+                    formControlName="password"
+                    matInput
+                    placeholder="Insert your username"
+                >
+            </mat-form-field>
+        </form>
+
+        <button mat-raised-button (click)="login()" [color]="'primary'">
+            Sign In
+        </button>
+        <br>
+
+        <button mat-raised-button (click)="clear()">
+            Clear
+        </button>
+    </div>
+</div>
