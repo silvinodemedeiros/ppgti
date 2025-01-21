@@ -16,6 +16,12 @@ from consumer.urls import router_consumer  # Inclui as URLs do app 'consumer' pa
 from climate.urls import router_climate
 from layout.urls import router_widget, router_cell, router_grid, router_template
 
+# Importanto classes para autenticação via token JWT
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 # Configuração do Swagger
 # O Swagger é uma ferramenta para gerar documentação interativa e bem formatada para APIs RESTful.
 schema_view = get_schema_view(
@@ -34,6 +40,10 @@ schema_view = get_schema_view(
 
 # Definindo as rotas (URLs) da aplicação
 urlpatterns = [
+
+    # Rotas para obtenção do token e do refresh token
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Rota para a página de administração do Django
     path('admin/', admin.site.urls),

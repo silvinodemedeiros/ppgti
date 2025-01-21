@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +37,8 @@ INSTALLED_APPS = [
 
     'drf_yasg',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
     
     'consumer',
     'climate',
@@ -54,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'imd_dev_web.urls'
@@ -153,12 +157,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Permissões para ngrok
 
@@ -166,3 +172,13 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app',  # Permite todos os subdomínios do ngrok
     'https://*.ngrok.io',        # Caso use o domínio padrão do ngrok
 ]
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Token expira em 15 min
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),  # Tempo máximo de sessão
+    'ROTATE_REFRESH_TOKENS': True,  # Gera um novo refresh token a cada login
+    'BLACKLIST_AFTER_ROTATION': True,  # Torna o token antigo inválido após refresh
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
