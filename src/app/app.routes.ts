@@ -3,7 +3,7 @@ import { GlComponent } from './gl/gl.component';
 import { GlGridsComponent } from './gl-grids/gl-grids.component';
 import { GlWidgetsComponent } from './gl-widgets/gl-widgets.component';
 import { GlTemplatesComponent } from './gl-templates/gl-templates.component';
-import { LoginComponent } from './gl-core/login/login/login.component';
+import { LoginComponent } from './gl-core/login/login.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },

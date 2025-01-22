@@ -1,0 +1,25 @@
+
+.gl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+
+    h1 {
+        margin: 0;
+    }
+
+    &-user {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: lightgray;
+        border: 3px solid transparent;
+        
+        &:hover {
+            cursor: pointer;
+            border-color: gray;
+            transition: all .2s ease;
+        }
+    }
+}

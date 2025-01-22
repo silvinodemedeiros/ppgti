@@ -12,15 +12,17 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { TemplateService } from '../services/template/template.service';
-import { AsyncLoadingPipe } from '../pipes/async-loading.pipe';
 import { CellService } from '../services/cell/cell.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GlHeaderComponent } from '../gl-core/gl-header/gl-header.component';
 
 @Component({
   selector: 'app-gl',
   standalone: true,
   imports: [
+    GlHeaderComponent,
     GlMenuComponent,
     CommonModule,
     RouterModule,
@@ -29,7 +31,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule
   ],
   exportAs: 'GlComponent',
   templateUrl: './gl.component.html',
