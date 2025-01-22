@@ -22,6 +22,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from auth.views import register_user
+
 # Configuração do Swagger
 # O Swagger é uma ferramenta para gerar documentação interativa e bem formatada para APIs RESTful.
 schema_view = get_schema_view(
@@ -44,6 +46,7 @@ urlpatterns = [
     # Rotas para obtenção do token e do refresh token
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', register_user, name='register_user'),
 
     # Rota para a página de administração do Django
     path('admin/', admin.site.urls),
