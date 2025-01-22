@@ -38,6 +38,7 @@ yarn-error.log
 testem.log
 /typings
 /backend/data/*
+/backend/imd_dev_web/staticfiles/*
 
 # System files
 .DS_Store
