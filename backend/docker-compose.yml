@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+
+  imd_dev_web:
+    container_name: imd_dev_web
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    ports:
+      - 8000:8000
+    volumes:
+      - ./imd_dev_web:/imd_dev_web
+      - ./data/web/static:/data/web/static/
+      - ./data/web/media:/data/web/media/
+    env_file:
+      - ./dotenv_files/.env
+    depends_on:
+      - psql
+      - script-orion
+    networks:
+      - fiware-net
+
+  psql:
+    container_name: psql
+    image: postgres:13
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data/
+    env_file:
+      - ./dotenv_files/.env
+    networks:
+      - fiware-net
+      
+  fiware-orion:
+    image: fiware/orion:latest
+    container_name: fiware-orion
+    ports:
+      - "1026:1026"
+    command:
+      - "-dbURI"
+      - "mongodb://mongo-db:27017"
+      - "-logLevel"
+      - "DEBUG"
+    depends_on:
+      - mongo-db
+    networks:
+      - fiware-net
+
+  mongo-db:
+    image: mongo:4.4
+    container_name: mongo-db
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo-db:/data
+    networks:
+      - fiware-net
+
+  script-orion:
+    build:
+      context: .
+      dockerfile: Dockerfile.orion
+    container_name: script-orion
+    depends_on:
+      - fiware-orion
+      - mongo-db
+    networks:
+      - fiware-net
+    restart: on-failure
+
+networks:
+  fiware-net:
+    driver: bridge
