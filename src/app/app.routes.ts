@@ -4,10 +4,12 @@ import { GlGridsComponent } from './gl-grids/gl-grids.component';
 import { GlWidgetsComponent } from './gl-widgets/gl-widgets.component';
 import { GlTemplatesComponent } from './gl-templates/gl-templates.component';
 import { LoginComponent } from './gl-core/login/login.component';
+import { SignupComponent } from './gl-core/signup/signup.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
   { path: 'editor/widgets', component: GlComponent },
   { path: 'editor/grids', component: GlComponent },
   { path: 'editor/templates', component: GlComponent },

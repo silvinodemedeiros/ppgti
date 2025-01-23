@@ -13,24 +13,47 @@ const AUTH_HEADER = {
     }
 };
 
+
+const REMOTE_API_URL = 'http://localhost:8000/api';
+
+const REGISTER_URI = '/register/';
+const TOKEN_URI = '/token/';
 const WIDGET_URI = '/layout/widget';
 const WEATHER_URI = '/climate/weather';
 const GRID_URI = '/layout/grid';
 const CELL_URI = '/layout/cell';
 const TEMPLATE_URI = '/layout/template';
 
-const REMOTE_API_URL = 'http://localhost:8000/api/v1';
-const WIDGET_API_URL = REMOTE_API_URL + WIDGET_URI;
-const WEATHER_API_URL = REMOTE_API_URL + WEATHER_URI;
-const GRID_API_URL = REMOTE_API_URL + GRID_URI;
-const CELL_API_URL = REMOTE_API_URL + CELL_URI;
-const TEMPLATE_API_URL = REMOTE_API_URL + TEMPLATE_URI;
+const REGISTER_API_URL = REMOTE_API_URL + REGISTER_URI;
+const TOKEN_API_URL = REMOTE_API_URL + TOKEN_URI;
+const WIDGET_API_URL = REMOTE_API_URL + '/v1/' + WIDGET_URI;
+const WEATHER_API_URL = REMOTE_API_URL + '/v1/' + WEATHER_URI;
+const GRID_API_URL = REMOTE_API_URL + '/v1/' + GRID_URI;
+const CELL_API_URL = REMOTE_API_URL + '/v1/' + CELL_URI;
+const TEMPLATE_API_URL = REMOTE_API_URL + '/v1/' + TEMPLATE_URI;
 
 app.use(cors({
     origin: 'http://localhost:4200'
 }));
 
 app.use(express.json());
+
+app.post('/signup', async (req, res) => {
+    try {
+        const response = await axios.post(REGISTER_API_URL, req.body.data, AUTH_HEADER);
+
+        res.json({
+            message: 'Entity created successfully through remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error: error.message
+        });
+    }
+});
 
 app.get('/weather', async (req, res) => {
     try {

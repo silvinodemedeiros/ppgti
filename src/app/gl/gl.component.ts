@@ -82,7 +82,6 @@ export class GlComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.itemList$
     this.activatedRoute.url.subscribe((urlSegments) => {
 
       this.currentRoute = urlSegments.map((segment) => segment.path).join('/');

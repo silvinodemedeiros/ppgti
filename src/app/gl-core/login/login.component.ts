@@ -34,16 +34,18 @@ export class LoginComponent {
 
   login(): void {
     const {username, password} = this.loginForm.value;
-    
-    console.log('Loggin in with: ', username, password);
 
     if (username === 'admin' && password === 'admin') {
       this.router.navigateByUrl('/editor/widgets');
     }
   }
 
-  clear(): void {
+  reset(): void {
     this.loginForm.reset();
+  }
+
+  goToSignup() {
+    this.router.navigateByUrl('/signup');
   }
 
 }

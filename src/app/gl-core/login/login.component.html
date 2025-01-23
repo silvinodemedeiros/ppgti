@@ -1,6 +1,8 @@
 <div class="gl-login">
     <div class="login-wrapper">
-        <h1>Welcome to Goldlink</h1>
+        <h1>Welcome</h1>
+
+        <h2>Sign in to Goldlinks</h2>
         
         <form [formGroup]="loginForm">
             <mat-form-field>
@@ -22,13 +24,19 @@
             </mat-form-field>
         </form>
 
-        <button mat-raised-button (click)="login()" [color]="'primary'">
-            Sign In
-        </button>
-        <br>
+        <div class="form-buttons">
+            <button mat-raised-button (click)="login()" [color]="'primary'">
+                Sign In
+            </button>
+    
+            <button mat-raised-button (click)="goToSignup()" >
+                Sign Up
+            </button>
+        </div>
 
-        <button mat-raised-button (click)="clear()">
-            Clear
+
+        <button mat-raised-button (click)="reset()">
+            Reset Fields
         </button>
     </div>
 </div>

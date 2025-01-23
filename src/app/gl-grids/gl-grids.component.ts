@@ -10,12 +10,14 @@ import { forkJoin, of, Subscription, switchMap } from 'rxjs';
 import { GridService } from '../services/grid/grid.service';
 import { CellService } from '../services/cell/cell.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GlHeaderComponent } from '../gl-core/gl-header/gl-header.component';
 
 @Component({
   selector: 'app-gl-grids',
   standalone: true,
   imports: [
     GlMenuComponent,
+    GlHeaderComponent,
     RouterModule,
     CommonModule,
     FormsModule,
