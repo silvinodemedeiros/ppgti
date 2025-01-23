@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     templateUrl: './signup.component.html',
     styleUrl: './signup.component.less'
   })
-  export class SignupComponent {
+  export class SignupComponent implements OnInit, OnDestroy {
   
     signupForm: FormGroup;
     private _snackBar = inject(MatSnackBar);

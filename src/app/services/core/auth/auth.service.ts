@@ -7,7 +7,12 @@ import { switchMap, of } from 'rxjs';
 })
 export class AuthService {
 
-  private signupApiUrl = 'http://localhost:3000/signup';
+  private accessTokenApiUrl = 'http://localhost:3000/auth/access-token';
+  private generateTokenApiUrl = 'http://localhost:3000/auth/generate-token';
+  private signupApiUrl = 'http://localhost:3000/auth/signup';
+
+  private _accessToken = null;
+  private _refreshToken = null;
 
   constructor(
     private httpClient: HttpClient
@@ -19,7 +24,7 @@ export class AuthService {
     return this.httpClient.post<any>(this.signupApiUrl, {
       data: {
         nome: username,
-        email: email,
+        email,
         password
       }
     }).pipe(
@@ -28,4 +33,30 @@ export class AuthService {
       })
     );
   }
+
+  login(email: string, password: string) {
+    return this.httpClient.post<any>(this.generateTokenApiUrl, {
+      data: {
+        email, password
+      }
+    }).pipe(
+      switchMap((res) => {
+        const {refresh, access} = res.data;
+        this._accessToken = access;
+        this._refreshToken = refresh;
+
+        return of(null);
+      })
+    );
+  }
+
+  getAccessToken() {
+    return this._accessToken;
+  }
+
+  getRefreshToken() {
+    return this._refreshToken;
+  }
+
+  
 }

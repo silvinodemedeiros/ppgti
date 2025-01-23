@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { provideRouter, Router } from '@angular/router';
+import { AuthService } from '../../services/core/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -15,16 +17,18 @@ import { provideRouter, Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.less'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
+  subscription = new Subscription();
 
   constructor(
     private fb: UntypedFormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -32,12 +36,18 @@ export class LoginComponent {
   ngOnInit(): void {
   }
 
-  login(): void {
-    const {username, password} = this.loginForm.value;
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
-    if (username === 'admin' && password === 'admin') {
+  login(): void {
+    const {email, password} = this.loginForm.value;
+
+    const sub = this.authService.login(email, password).subscribe(() => {
       this.router.navigateByUrl('/editor/widgets');
-    }
+    });
+
+    this.subscription.add(sub);
   }
 
   reset(): void {

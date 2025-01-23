@@ -38,7 +38,24 @@ app.use(cors({
 
 app.use(express.json());
 
-app.post('/signup', async (req, res) => {
+app.post('/auth/generate-token', async (req, res) => {
+    try {
+        const response = await axios.post(TOKEN_API_URL, req.body.data, AUTH_HEADER);
+
+        res.json({
+            message: 'Entity created successfully through remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error: error.message
+        });
+    }
+});
+
+app.post('/auth/signup', async (req, res) => {
     try {
         const response = await axios.post(REGISTER_API_URL, req.body.data, AUTH_HEADER);
 
