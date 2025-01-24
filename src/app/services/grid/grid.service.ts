@@ -8,7 +8,7 @@ import { forkJoin, map, of, switchMap } from 'rxjs';
 })
 export class GridService {
 
-  private gridApiUrl = 'http://localhost:3000/grid';
+  private gridApiUrl = 'http://localhost:8000/api/v1/layout/grid/';
 
   constructor(
     private cellService: CellService,
@@ -16,15 +16,11 @@ export class GridService {
   ) { }
 
   getGrids() {
-    return this.httpClient.get<any>(this.gridApiUrl).pipe(
-      map(gridList => gridList.data)
-    );
+    return this.httpClient.get<any>(this.gridApiUrl);
   }
 
   getGridById(id: any) {
-    return this.httpClient.get<any>(this.gridApiUrl + '?id=' + id).pipe(
-      map(gridList => gridList.data)
-    );
+    return this.httpClient.get<any>(this.gridApiUrl + '/get_by_id/' + id + '/');
   }
 
   createGrid(name: any, cells: any) {

@@ -10,9 +10,9 @@ import { switchMap, of, catchError, map, Observable } from 'rxjs';
 export class AuthService {
   private timeout: any;  // Timer para detectar inatividade
 
-  private tokenApiUrl = 'http://localhost:8000/token/';
-  private refreshTokenApiUrl = 'http://localhost:8000/token/refresh/';
-  private signupApiUrl = 'http://localhost:8000/register/';
+  private tokenApiUrl = 'http://localhost:8000/api/token/';
+  private refreshTokenApiUrl = 'http://localhost:8000/api/token/refresh/';
+  private signupApiUrl = 'http://localhost:8000/api/register/';
 
   constructor(
     private httpClient: HttpClient,
@@ -24,26 +24,17 @@ export class AuthService {
     const { username, email, password } = data;
 
     return this.httpClient.post<any>(this.signupApiUrl, {
-      data: {
-        nome: username,
-        email,
-        password
-      }
-    }).pipe(
-      switchMap((c) => {
-        return of({ ...c.data })
-      })
-    );
+      nome: username,
+      email,
+      password
+    });
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.httpClient.post(this.tokenApiUrl, {
-      data: { email, password }
-    }).pipe(
+    return this.httpClient.post(this.tokenApiUrl, { email, password }).pipe(
       map((res: any) => {
-        console.log(res);
-        localStorage.setItem('access_token', res.data.access);
-        localStorage.setItem('refresh_token', res.data.refresh);
+        localStorage.setItem('access_token', res.access);
+        localStorage.setItem('refresh_token', res.refresh);
         this.startSessionTimeout();
         return res;
       })
@@ -75,7 +66,7 @@ export class AuthService {
 
     return this.httpClient.post(this.refreshTokenApiUrl, { refresh: refreshToken }).pipe(
       map((res: any) => {
-        localStorage.setItem('access_token', res.data.access);
+        localStorage.setItem('access_token', res.access);
         this.startSessionTimeout();
         return res;
       }),

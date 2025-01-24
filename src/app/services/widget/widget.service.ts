@@ -7,7 +7,6 @@ import { map } from 'rxjs';
 })
 export class WidgetService {
 
-  // private widgetApiUrl = 'http://localhost:3000/widget';
   widgetApiUrl = 'http://localhost:8000/api/v1/layout/widget/';
   constructor(private httpClient: HttpClient) { }
 
@@ -22,10 +21,10 @@ export class WidgetService {
   }
 
   createWidget(data: any) {
-    return this.httpClient.post<any>(this.widgetApiUrl, data);
+    return this.httpClient.post<any>(this.widgetApiUrl + '/create/', data);
   }
 
   deleteWidget(id: any) {
-    return this.httpClient.delete<any>(this.widgetApiUrl + '?id=' + id);
+    return this.httpClient.delete<any>(this.widgetApiUrl + '/get_by_id/' + id + '/');
   }
 }

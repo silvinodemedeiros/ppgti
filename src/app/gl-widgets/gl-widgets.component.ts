@@ -25,7 +25,6 @@ import { JwtHelperService } from '@auth0/angular-jwt';
     MatInputModule,
     MatButtonModule,
   ],
-  providers: [WidgetService],
   templateUrl: './gl-widgets.component.html',
   styleUrl: './gl-widgets.component.less'
 })
