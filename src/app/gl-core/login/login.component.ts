@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { provideRouter, Router } from '@angular/router';
 import { AuthService } from '../../services/core/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,9 @@ import { Subscription } from 'rxjs';
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule
+  ],
+  providers: [
+    AuthService
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.less'

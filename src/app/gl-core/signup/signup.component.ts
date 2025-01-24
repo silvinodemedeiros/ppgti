@@ -17,6 +17,9 @@ import { MatIconModule } from '@angular/material/icon';
       MatButtonModule,
       MatIconModule
     ],
+    providers: [
+      AuthService
+    ],
     templateUrl: './signup.component.html',
     styleUrl: './signup.component.less'
   })

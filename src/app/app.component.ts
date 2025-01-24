@@ -4,7 +4,8 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { WeatherService } from './services/weather/weather.service';
-import { JwtInterceptor, JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
+import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
+import { JwtInterceptor } from './services/core/jwt/jwt.interceptor';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,6 @@ import { JwtInterceptor, JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jw
     RouterModule,
     DragDropModule,
     HttpClientModule
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-    JwtHelperService 
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'

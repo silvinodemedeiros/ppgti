@@ -7,15 +7,13 @@ import { map } from 'rxjs';
 })
 export class WeatherService {
 
-  weatherUrl = 'http://localhost:3000/weather';
+  weatherUrl = 'http://localhost:8000/api/v1/climate/weather/';
 
   constructor(
     private httpClient: HttpClient
   ) { }
 
   getWeather() {
-    return this.httpClient.get<any>(this.weatherUrl).pipe(
-      map(weather => weather.data)
-    );
+    return this.httpClient.get<any>(this.weatherUrl);
   }
 }

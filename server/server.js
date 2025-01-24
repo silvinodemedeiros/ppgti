@@ -55,6 +55,23 @@ app.post('/auth/generate-token', async (req, res) => {
     }
 });
 
+app.post('/auth/refresh-token', async (req, res) => {
+    try {
+        const response = await axios.post(TOKEN_API_URL + '/refresh/', req.body.data, AUTH_HEADER);
+
+        res.json({
+            message: 'Entity created successfully through remote API',
+            data: response.data
+        });
+    } catch (error) {
+        console.error('Error fetching data from remote API:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch data from remote API',
+            error: error.message
+        });
+    }
+});
+
 app.post('/auth/signup', async (req, res) => {
     try {
         const response = await axios.post(REGISTER_API_URL, req.body.data, AUTH_HEADER);
@@ -91,7 +108,7 @@ app.get('/weather', async (req, res) => {
 
 app.get('/widget', async (req, res) => {
     try {
-        const response = await axios.get(WIDGET_API_URL, AUTH_HEADER);
+        const response = await axios.get(WIDGET_API_URL, req.headers);
 
         res.json({
             message: 'Data fetched successfully from remote API',

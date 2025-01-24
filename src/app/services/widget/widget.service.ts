@@ -7,14 +7,12 @@ import { map } from 'rxjs';
 })
 export class WidgetService {
 
-  private widgetApiUrl = 'http://localhost:3000/widget';
-
+  // private widgetApiUrl = 'http://localhost:3000/widget';
+  widgetApiUrl = 'http://localhost:8000/api/v1/layout/widget/';
   constructor(private httpClient: HttpClient) { }
 
   getWidgets() {
-    return this.httpClient.get<any>(this.widgetApiUrl).pipe(
-      map(widgetList => widgetList.data)
-    );
+    return this.httpClient.get<any>(this.widgetApiUrl);
   }
 
   getWidgetById(id: any) {

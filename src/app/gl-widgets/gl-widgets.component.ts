@@ -5,11 +5,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { GlMenuComponent } from '../gl-menu/gl-menu.component';
-import { HttpClientModule } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { WidgetService } from '../services/widget/widget.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../services/core/auth/auth.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-gl-widgets',
@@ -17,7 +18,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   imports: [
     GlMenuComponent,
     RouterModule,
-    HttpClientModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -25,6 +25,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatInputModule,
     MatButtonModule,
   ],
+  providers: [WidgetService],
   templateUrl: './gl-widgets.component.html',
   styleUrl: './gl-widgets.component.less'
 })
@@ -84,14 +85,11 @@ export class GlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   createWidget() {
-    const type = this.form.get('type')?.value;
-    const value = this.form.get('value')?.value;
+    const {type, value} = this.form.value;
 
     const createSub = this.widgetService.createWidget({
-      data: {
-        type: type,
-        value: value
-      }
+      type: type,
+      value: value
     }).subscribe(({data}: any) => {
       this.widgets = [...this.widgets, data];
       this.form.reset();
