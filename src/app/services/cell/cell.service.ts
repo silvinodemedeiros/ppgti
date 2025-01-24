@@ -7,16 +7,14 @@ import { map } from 'rxjs';
 })
 export class CellService {
 
-  cellUrl = 'http://localhost:3000/cell';
+  cellUrl = 'http://localhost:8000/api/v1/layout/cell/';
 
   constructor(
     private httpClient: HttpClient
   ) { }
 
   getCellById(id: any) {
-    return this.httpClient.get<any>(this.cellUrl + '?id=' + id).pipe(
-      map(response => response.data)
-    );
+    return this.httpClient.get<any>(this.cellUrl + 'get_by_id/' + id + '/');
   }
 
   createCell(data: any) {
@@ -35,8 +33,6 @@ export class CellService {
       delete payload.widget;
     }
     
-    return this.httpClient.post<any>(this.cellUrl, {
-      data: payload
-    });
+    return this.httpClient.post<any>(this.cellUrl + 'create/', payload);
   }
 }

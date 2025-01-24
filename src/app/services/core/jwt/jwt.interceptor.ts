@@ -34,7 +34,13 @@ export class JwtInterceptor implements HttpInterceptor {
 export const jwtInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
   const _authService = inject(AuthService);
   const _jwtHelper = inject(JwtHelperService);
+  
   const token = _authService.getToken();
+  const isExpired = _jwtHelper.isTokenExpired(token);
+  
+  if (isExpired) {
+      _authService.refreshToken().subscribe();
+  }
 
   const clonedRequest = req.clone({
     setHeaders: {

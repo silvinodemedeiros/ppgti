@@ -8,7 +8,7 @@ import { GridService } from '../grid/grid.service';
 })
 export class TemplateService {
 
-  private templateApiUrl = 'http://localhost:3000/template';
+  private templateApiUrl = 'http://localhost:8000/api/v1/layout/template/';
 
   constructor(
     private gridService: GridService,
@@ -16,32 +16,26 @@ export class TemplateService {
   ) { }
 
   getTemplates() {
-    return this.httpClient.get<any>(this.templateApiUrl).pipe(
-      map(({data}) => data)
-    );
+    return this.httpClient.get<any>(this.templateApiUrl);
   }
 
   getTemplateById(id: any) {
-    return this.httpClient.get<any>(this.templateApiUrl + '?id=' + id).pipe(
-      map(({data}) => data)
-    );
+    return this.httpClient.get<any>(this.templateApiUrl + 'get_by_id/' + id + '/');
   }
 
   createTemplate(name: any, cells: any) {
 
     return this.gridService.createGrid(name, cells).pipe(
       switchMap((createdGrid) => {
-        return this.httpClient.post<any>(this.templateApiUrl, {
-          data: {
-            name,
-            grids: [createdGrid.data.id]
-          }
+        return this.httpClient.post<any>(this.templateApiUrl + 'create/', {
+          name,
+          grids: [createdGrid.id]
         })
       })
     );
   }
 
   deleteTemplate(id: any) {
-    return this.httpClient.delete<any>(this.templateApiUrl + '?id=' + id);
+    return this.httpClient.delete<any>(this.templateApiUrl + 'delete_by_id/' + id + '/');
   }
 }

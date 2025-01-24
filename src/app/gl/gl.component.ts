@@ -104,6 +104,7 @@ export class GlComponent implements OnInit, OnDestroy {
     );
 
     this.cells = JSON.parse(localStorage.getItem('storedCells') as string);
+    this.populateWidgetsById();
 
     this.subscription.add(sub);
   }
@@ -145,11 +146,9 @@ export class GlComponent implements OnInit, OnDestroy {
 
   assignTemplate(template: any) {
 
-    const gridSub = this.gridService.getGridById(template.grids[0]).subscribe((data) => {
+    const gridSub = this.gridService.getGridById(template.grids[0]).subscribe((templateGrid) => {
       
       this.form.get('name')?.setValue(template.name);
-
-      const templateGrid = data.filter((grid: any) => grid.id === template.grids[0])[0];
 
       const cellRequests = templateGrid.cells.map((cellId: any) => {
         return this.cellService.getCellById(cellId);
@@ -157,23 +156,23 @@ export class GlComponent implements OnInit, OnDestroy {
   
       forkJoin(cellRequests).subscribe((cellList: any) => {
         this.cells = [...cellList];
-
-        this.cells.forEach((cell: any, index: number) => {
-          if (cell.widget) {
-            this.widgetService.getWidgetById(cell.widget).subscribe((widget) => {
-
-              const cellWidget = widget.filter((cw: any) => cw.id === cell.widget)[0]
-              this.cells[index].widget = cellWidget;
-            });
-          }
-        });
-
+        this.populateWidgetsById();
         this.store();
       });
 
     });
 
     this.subscription.add(gridSub);
+  }
+
+  populateWidgetsById(): void {
+    this.cells?.forEach((cell: any, index: number) => {
+      if (cell.widget) {
+        this.widgetService.getWidgetById(cell.widget).subscribe((widget) => {
+          this.cells[index].widget = widget;
+        });
+      }
+    });
   }
 
   removeWidget(cellIndex: any): void {
@@ -192,13 +191,11 @@ export class GlComponent implements OnInit, OnDestroy {
   }
 
   saveTemplate() {
-    console.log(this.form.value, this.cells);
-
     const sub = this.templateService.createTemplate(this.form.value.name, this.cells).subscribe(() => {
-
-    
       this._snackBar.open('Template created successfully!', 'OK');
     });
+
+    this.subscription.add(sub);
   }
 
 

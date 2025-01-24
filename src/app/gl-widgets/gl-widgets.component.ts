@@ -9,14 +9,14 @@ import { Subscription } from 'rxjs';
 import { WidgetService } from '../services/widget/widget.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService } from '../services/core/auth/auth.service';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { GlHeaderComponent } from '../gl-core/gl-header/gl-header.component';
 
 @Component({
   selector: 'app-gl-widgets',
   standalone: true,
   imports: [
     GlMenuComponent,
+    GlHeaderComponent,
     RouterModule,
     CommonModule,
     FormsModule,

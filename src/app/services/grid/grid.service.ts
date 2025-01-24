@@ -20,32 +20,26 @@ export class GridService {
   }
 
   getGridById(id: any) {
-    return this.httpClient.get<any>(this.gridApiUrl + '/get_by_id/' + id + '/');
+    return this.httpClient.get<any>(this.gridApiUrl + 'get_by_id/' + id + '/');
   }
 
   createGrid(name: any, cells: any) {
 
     const cellRequests = cells.map((cell: any) => {
-      return this.cellService.createCell({...cell}).pipe(
-        switchMap((c) => {
-          return of({...c.data})
-        })
-      );
+      return this.cellService.createCell({...cell});
     }) as any[];
 
     return forkJoin(...cellRequests).pipe(
       switchMap((createdCells) => {
-        return this.httpClient.post<any>(this.gridApiUrl, {
-          data: {
-            name,
-            cells: createdCells.map((cell: any) => cell.id)
-          }
+        return this.httpClient.post<any>(this.gridApiUrl + 'create/', {
+          name,
+          cells: createdCells.map((cell: any) => cell.id)
         })
       })
     );
   }
 
   deleteGrid(id: any) {
-    return this.httpClient.delete<any>(this.gridApiUrl + '?id=' + id);
+    return this.httpClient.delete<any>(this.gridApiUrl + 'delete_by_id/' + id + '/');
   }
 }

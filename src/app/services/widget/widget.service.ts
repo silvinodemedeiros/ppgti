@@ -7,7 +7,7 @@ import { map } from 'rxjs';
 })
 export class WidgetService {
 
-  widgetApiUrl = 'http://localhost:8000/api/v1/layout/widget/';
+  private widgetApiUrl = 'http://localhost:8000/api/v1/layout/widget/';
   constructor(private httpClient: HttpClient) { }
 
   getWidgets() {
@@ -15,16 +15,14 @@ export class WidgetService {
   }
 
   getWidgetById(id: any) {
-    return this.httpClient.get<any>(this.widgetApiUrl + '?id=' + id).pipe(
-      map(widgetList => widgetList.data)
-    );
+    return this.httpClient.get<any>(this.widgetApiUrl + 'get_by_id/' + id + '/');
   }
 
   createWidget(data: any) {
-    return this.httpClient.post<any>(this.widgetApiUrl + '/create/', data);
+    return this.httpClient.post<any>(this.widgetApiUrl + 'create/', data);
   }
 
   deleteWidget(id: any) {
-    return this.httpClient.delete<any>(this.widgetApiUrl + '/get_by_id/' + id + '/');
+    return this.httpClient.delete<any>(this.widgetApiUrl + 'delete_by_id/' + id + '/');
   }
 }
